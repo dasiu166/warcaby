@@ -114,7 +114,8 @@ public class Board {
 		BlackField dF = (BlackField) this.getField(dest[0], dest[1]);
 		
 		//Sprawdza czy to kolejka aktualnego gracza
-		//if (tF.getPawn().getSide()!=s) return false;
+		if (tF.getPawn()==null) return false;
+		if (tF.getPawn().getSide()!=s) return false;
 		
 		//Sprawdza czy cel ma pionek a pole docelowe nie ma
 		if ((tF.getPawn()==null) || (dF.getPawn()!=null)) return false;

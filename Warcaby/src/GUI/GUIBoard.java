@@ -187,7 +187,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			if (boardLog.permisionToMove(target, dest, site)){
 				boardLog.doMove(target, dest);
 				
-				//if(site)site=false;else site=true; //zamiana stron
+				if(site)site=false;else site=true; //zamiana stron
 			}
 			numbClick=0;
 		}
