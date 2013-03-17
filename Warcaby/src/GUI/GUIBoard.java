@@ -63,6 +63,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	private int[] target = new int[2];// wsp cel [0]-row  [1]-col
 	private int[] dest = new int[2];//wsp miejsca docelowego
+	
+	private PlayersPanel plP; //panel wyswietlajacy liczbe pionkow
 	//END###---INNE
 	
 	@Override
@@ -186,6 +188,10 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		site=!site; //cofniecie zmiany stron
 		repaint();
 	}
+	public void setPlP(PlayersPanel p){
+		plP=p;
+	}
+	
 	
 	
 	public void actionPerformed(ActionEvent e){
@@ -214,7 +220,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			if (boardLog.permisionToSingleMove(target, dest, site)){
 				boardLog.doMove(target, dest);
-				
+				plP.setp1PG(boardLog.getLostPawnsNumb(false));
+				plP.setp2PG(boardLog.getLostPawnsNumb(true));
 				if(site)site=false;else site=true; //zamiana stron
 			}
 			numbClick=0;

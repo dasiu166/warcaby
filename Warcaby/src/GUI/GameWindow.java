@@ -95,6 +95,7 @@ public class GameWindow extends JFrame implements ActionListener{
 		//##PLANSZA##
 		Gboard = new GUIBoard();
 		Gboard.setVisible(true);
+		Gboard.setPlP(playersP);//dla licznika
 		JPanel midleP = new JPanel();
 		midleP.setLayout(new BoxLayout(midleP, BoxLayout.PAGE_AXIS));
 		this.add(midleP);
@@ -111,6 +112,8 @@ public class GameWindow extends JFrame implements ActionListener{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 	}
+	
+	
 	
 	public void actionPerformed(ActionEvent e){
 		if (e.getSource() == JMINowaGra){
