@@ -1,5 +1,7 @@
 package board;
 
+import javax.swing.JOptionPane;
+
 import checkers.Pawn;
 
 public class Board {
@@ -36,13 +38,7 @@ public class Board {
 	
 	
 	public void makeBoard(){
-		/*uwaga w opisie bede stosowal rzeczywiste odniesienie do wspolrzednych
-		 * mimo iz z kodu bedzie wynikac na odwrot, dlatego ze zaczynamy liczyc
-		 * od 0, a wspolrzedne rzeczywiste sa od 1
-		 * 
-		 * 
-		 * Ogolna zasada jest taka ze w np wierszach czarne pola sa w np kolumnach
-		 * a w p wierszach sa w p kolumnach*/
+		/* */
 		rowChkField=-1;//reset zaznaczonych
 		colChkField=-1;//reset zanzaczonych
 		int r=0;
@@ -105,9 +101,28 @@ public class Board {
 		
 	}
 	
-	public boolean permisionToMove(int[] tar, int[] dest, boolean s){
+	public int getLostPawnsNumb(boolean s){
+		//zwraca iloscionkow straconych przez dana strone
+		int numb=0;
+		for (int r=0;r<8;r++){
+			for (int c=0;c<8;c++){
+				if(board[r][c].getColor()){
+					if(((BlackField)board[r][c]).havePawn()){
+						if(((BlackField)board[r][c]).getPawn().getSide()==s){
+							numb++;
+						}
+					}
+				}
+			}
+		}
+		return 12-numb;
+	}
+	
+	public boolean permisionToSingleMove(int[] tar, int[] dest, boolean s){
+		//dotyczy zasasd dla pojedynczego ruchu
+		
 		//!!!Bardzo wazne, inaczej wyjdzie blad indexu tabeli
-		if ((tar[0]==-1)||(tar[1]==-1)||(dest[0]==-1)||(dest[1]==-1)) return false;
+		if ((tar[0]<0)||(tar[1]<0)||(dest[0]<0)||(dest[1]<0)) return false;
 		
 		
 		BlackField tF = (BlackField) this.getField(tar[0], tar[1]);
@@ -138,6 +153,7 @@ public class Board {
 					if ((tar[0]-dest[0]!=tar[1]-dest[1])&&
 							(-(tar[0]-dest[0])!=tar[1]-dest[1])) return false; 
 					else return true;
+						
 				}
 				
 				
@@ -145,6 +161,7 @@ public class Board {
 				if (tar[0]-dest[0]==2){
 					if (tar[1]-dest[1]==2){//lewa strona
 						Pawn tmpP = ((BlackField)board[tar[0]-1][tar[1]-1]).getPawn();
+						if(tmpP==null) return false;
 						if (tmpP.getSide()!=tF.getPawn().getSide()){
 							//jezeli to pionek przeciwnika(up) to usun(down)
 							((BlackField)board[tar[0]-1][tar[1]-1]).removePawn();
@@ -152,9 +169,31 @@ public class Board {
 						} else return false;
 					} else {//prawa strona
 						Pawn tmpP = ((BlackField)board[tar[0]-1][tar[1]+1]).getPawn();
+						if(tmpP==null) return false;
 						if (tmpP.getSide()!=tF.getPawn().getSide()){
 							//jezeli to pionek przeciwnika(up) to usun(down)
 							((BlackField)board[tar[0]-1][tar[1]+1]).removePawn();
+							return true;
+						}else return false;
+					}
+				}
+				
+				//gdy chcemy bic pionka do tylu
+				if (tar[0]-dest[0]==-2){
+					if (tar[1]-dest[1]==-2){//lewa strona
+						Pawn tmpP = ((BlackField)board[tar[0]+1][tar[1]+1]).getPawn();
+						if(tmpP==null) return false;
+						if (tmpP.getSide()!=tF.getPawn().getSide()){
+							//jezeli to pionek przeciwnika(up) to usun(down)
+							((BlackField)board[tar[0]+1][tar[1]+1]).removePawn();
+							return true;
+						} else return false;
+					} else {//prawa strona
+						Pawn tmpP = ((BlackField)board[tar[0]+1][tar[1]-1]).getPawn();
+						if(tmpP==null) return false;
+						if (tmpP.getSide()!=tF.getPawn().getSide()){
+							//jezeli to pionek przeciwnika(up) to usun(down)
+							((BlackField)board[tar[0]+1][tar[1]-1]).removePawn();
 							return true;
 						}else return false;
 					}
@@ -184,6 +223,7 @@ public class Board {
 				if (tar[0]-dest[0]==-2){
 					if (tar[1]-dest[1]==-2){//lewa strona
 						Pawn tmpP = ((BlackField)board[tar[0]+1][tar[1]+1]).getPawn();
+						if(tmpP==null) return false;
 						if (tmpP.getSide()!=tF.getPawn().getSide()){
 							//jezeli to pionek przeciwnika(up) to usun(down)
 							((BlackField)board[tar[0]+1][tar[1]+1]).removePawn();
@@ -191,9 +231,30 @@ public class Board {
 						} else return false;
 					} else {//prawa strona
 						Pawn tmpP = ((BlackField)board[tar[0]+1][tar[1]-1]).getPawn();
+						if(tmpP==null) return false;
 						if (tmpP.getSide()!=tF.getPawn().getSide()){
 							//jezeli to pionek przeciwnika(up) to usun(down)
 							((BlackField)board[tar[0]+1][tar[1]-1]).removePawn();
+							return true;
+						}else return false;
+					}
+				}
+				//gdy chcemy bic pionka do tylu
+				if (tar[0]-dest[0]==2){
+					if (tar[1]-dest[1]==2){//lewa strona
+						Pawn tmpP = ((BlackField)board[tar[0]-1][tar[1]-1]).getPawn();
+						if(tmpP==null) return false;
+						if (tmpP.getSide()!=tF.getPawn().getSide()){
+							//jezeli to pionek przeciwnika(up) to usun(down)
+							((BlackField)board[tar[0]-1][tar[1]-1]).removePawn();
+							return true;
+						} else return false;
+					} else {//prawa strona
+						Pawn tmpP = ((BlackField)board[tar[0]-1][tar[1]+1]).getPawn();
+						if(tmpP==null) return false;
+						if (tmpP.getSide()!=tF.getPawn().getSide()){
+							//jezeli to pionek przeciwnika(up) to usun(down)
+							((BlackField)board[tar[0]-1][tar[1]+1]).removePawn();
 							return true;
 						}else return false;
 					}

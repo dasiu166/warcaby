@@ -116,16 +116,40 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
    							g2d.fill(new Ellipse2D.Float(
    									XSHIFT+(c*GF_SIZE),
    									YSHIFT+(r*GF_SIZE), 
-   									50, 
-   									50));
+   									GF_SIZE, 
+   									GF_SIZE));
+   							g2d.setColor(Color.BLACK);
+   							g2d.fill(new Ellipse2D.Float(
+   									XSHIFT+(c*GF_SIZE)+3,
+   									YSHIFT+(r*GF_SIZE)+3, 
+   									GF_SIZE-6, 
+   									GF_SIZE-6));
+   							g2d.setColor(Color.BLUE);
+   							g2d.fill(new Ellipse2D.Float(
+   									XSHIFT+(c*GF_SIZE)+6,
+   									YSHIFT+(r*GF_SIZE)+6, 
+   									GF_SIZE-12, 
+   									GF_SIZE-12));
    						} else {
    							//dolne pionki
    							g2d.setColor(Color.RED);
    							g2d.fill(new Ellipse2D.Float(
    									XSHIFT+(c*GF_SIZE),
    									YSHIFT+(r*GF_SIZE), 
-   									50, 
-   									50));
+   									GF_SIZE, 
+   									GF_SIZE));
+   							g2d.setColor(Color.BLACK);
+   							g2d.fill(new Ellipse2D.Float(
+   									XSHIFT+(c*GF_SIZE)+3,
+   									YSHIFT+(r*GF_SIZE)+3, 
+   									GF_SIZE-6, 
+   									GF_SIZE-6));
+   							g2d.setColor(Color.RED);
+   							g2d.fill(new Ellipse2D.Float(
+   									XSHIFT+(c*GF_SIZE)+6,
+   									YSHIFT+(r*GF_SIZE)+6, 
+   									GF_SIZE-12, 
+   									GF_SIZE-12));
    						}
    					}
    					
@@ -159,6 +183,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	public void backMove(){
 		//cofa ostatni ruch
 		boardLog.doMove(dest, target);
+		site=!site; //cofniecie zmiany stron
 		repaint();
 	}
 	
@@ -175,6 +200,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		if(numbClick==1){
 			point1st=e.getPoint();
 			target=CheckAndsetLightField(point1st);
+			
+			if((target[0]==-1)||(target[1]==-1)) numbClick=0;
+			
 			repaint();
 		}
 		
@@ -184,7 +212,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			dest=CheckAndsetLightField(point2nd);
 			//JOptionPane.showMessageDialog(null, "RUCH z "+target[0]+" "+target[1]+" DO "+dest[0]+" "+dest[1]);
 			
-			if (boardLog.permisionToMove(target, dest, site)){
+			if (boardLog.permisionToSingleMove(target, dest, site)){
 				boardLog.doMove(target, dest);
 				
 				if(site)site=false;else site=true; //zamiana stron
