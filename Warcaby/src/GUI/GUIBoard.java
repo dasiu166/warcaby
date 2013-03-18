@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -51,6 +53,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	//BEGIN###PLANSZA
 	private Rectangle[][] boardRec = new Rectangle[8][8]; //GRAFIKA PLANSZY
 	private Board boardLog = new Board(); //LOGIKA PLANSZY
+	private Board tmpBoard;
 	private Graphics2D g2d;
 	//END###---PLANSZA
 	
@@ -63,6 +66,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	private int[] target = new int[2];// wsp cel [0]-row  [1]-col
 	private int[] dest = new int[2];//wsp miejsca docelowego
+	private LinkedList<int[]> moveList;//lista ruchow dla danej strony
 	
 	private PlayersPanel plP; //panel wyswietlajacy liczbe pionkow
 	//END###---INNE
@@ -82,7 +86,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
         
         XSHIFT = (X_SIZE-(FIELD_NUMB*GF_SIZE))/2;
         YSHIFT = (Y_SIZE-(FIELD_NUMB*GF_SIZE))/2;
-        System.out.println("XSHIFT="+XSHIFT+"   YSHIFT="+YSHIFT);
+        //System.out.println("XSHIFT="+XSHIFT+"   YSHIFT="+YSHIFT);
         
         g2d.setColor(Color.DARK_GRAY);
         g2d.fill(new Rectangle(XSHIFT-BORDER1-BORDER2,YSHIFT-BORDER1-BORDER2,500,500));
@@ -132,6 +136,14 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
    									YSHIFT+(r*GF_SIZE)+6, 
    									GF_SIZE-12, 
    									GF_SIZE-12));
+   							if(tmpPawn.isKing()){
+   								g2d.setColor(Color.orange);
+   	   							g2d.fill(new Ellipse2D.Float(
+   	   									XSHIFT+(c*GF_SIZE)+12,
+   	   									YSHIFT+(r*GF_SIZE)+12, 
+   	   									GF_SIZE-24, 
+   	   									GF_SIZE-24));
+   							}
    						} else {
    							//dolne pionki
    							g2d.setColor(Color.RED);
@@ -152,6 +164,14 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
    									YSHIFT+(r*GF_SIZE)+6, 
    									GF_SIZE-12, 
    									GF_SIZE-12));
+   							if(tmpPawn.isKing()){
+   								g2d.setColor(Color.orange);
+   	   							g2d.fill(new Ellipse2D.Float(
+   	   									XSHIFT+(c*GF_SIZE)+12,
+   	   									YSHIFT+(r*GF_SIZE)+12, 
+   	   									GF_SIZE-24, 
+   	   									GF_SIZE-24));
+   							}
    						}
    					}
    					
@@ -175,6 +195,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		this.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		this.addMouseListener(this);
 		boardLog.makeBoard();
+		tmpBoard=boardLog;
 	}
 	
 	public void resetGUIBoard(){
@@ -185,11 +206,44 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	public void backMove(){
 		//cofa ostatni ruch
 		boardLog.doMove(dest, target);
+		
+		//dodawanie pionka w przypadku usuniecia
+		if(!site){
+		if (target[0]-dest[0]==2){
+			if(target[1]-dest[1]==2) 
+				((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
+			if(target[1]-dest[1]==-2) 
+				((BlackField)boardLog.getField(target[0]-1, target[1]+1)).addPawn(new Pawn(site));
+		}
+		if (target[0]-dest[0]==-2){
+			if(target[1]-dest[1]==2) 
+				((BlackField)boardLog.getField(target[0]+1, target[1]-1)).addPawn(new Pawn(site));
+			if(target[1]-dest[1]==-2) 
+				((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
+		}
+		} else {
+			if (target[0]-dest[0]==2){
+				if(target[1]-dest[1]==2) 
+					((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
+				if(target[1]-dest[1]==-2) 
+					((BlackField)boardLog.getField(target[0]-1, target[1]+1)).addPawn(new Pawn(site));
+			}
+			if (target[0]-dest[0]==-2){
+				if(target[1]-dest[1]==2) 
+					((BlackField)boardLog.getField(target[0]+1, target[1]-1)).addPawn(new Pawn(site));
+				if(target[1]-dest[1]==-2) 
+					((BlackField)boardLog.getField(target[0]+1, target[1]+1)).addPawn(new Pawn(site));
+			}
+			
+		}
+		
+		
 		site=!site; //cofniecie zmiany stron
 		repaint();
 	}
 	public void setPlP(PlayersPanel p){
 		plP=p;
+		plP.setSite(site);//wskazanie na panelu czyja kolej
 	}
 	
 	
@@ -200,31 +254,92 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {	
+		
+		if (numbClick==0){
+			tmpBoard=boardLog;
+			moveList=boardLog.PawnsToMoveList(site);
+			
+		}
+		
+		
 		numbClick++;
 		
 		if(numbClick==1){
+			
+			boolean is=false;
 			point1st=e.getPoint();
 			target=CheckAndsetLightField(point1st);
 			
 			if((target[0]==-1)||(target[1]==-1)) numbClick=0;
+			Iterator<int[]> i = moveList.iterator();
+			while(i.hasNext()){
+				int[] t = i.next();
+				if((t[0]==target[0])&&(t[1]==target[1])){
+					is=true;
+				}
+			}
+			if(!is){
+				JOptionPane.showMessageDialog(null, "Tym pionkiem nie ma ruchu");
+				numbClick=0;
+			}
 			
 			repaint();
 		}
 		
 		
 		if(numbClick==2){//po podwojnym kliknieciu
+			
+			boolean is=false;
 			point2nd=e.getPoint();
 			dest=CheckAndsetLightField(point2nd);
 			//JOptionPane.showMessageDialog(null, "RUCH z "+target[0]+" "+target[1]+" DO "+dest[0]+" "+dest[1]);
 			
-			if (boardLog.permisionToSingleMove(target, dest, site)){
-				boardLog.doMove(target, dest);
-				plP.setp1PG(boardLog.getLostPawnsNumb(false));
-				plP.setp2PG(boardLog.getLostPawnsNumb(true));
-				if(site)site=false;else site=true; //zamiana stron
+			
+			Iterator<int[]> i = moveList.iterator();
+			while(i.hasNext()){
+				int[] t = i.next();
+				if((t[2]==dest[0])&&(t[3]==dest[1])){
+					is=true;
+				}
 			}
-			numbClick=0;
+			
+			//------WERSJA permisionto single move ROBOCZA NIEEFEKTYWNA
+			if(is){
+		
+				boardLog.doMove(target, dest,site);
+				plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
+				plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
+				plP.setSite(!site);//wskazanie na panelu czyja kolej
+				
+				if(moveList.getFirst()[0]!=-1){ //jezeli nasz ruch nie byl zwyklym przesunieciem
+				moveList=boardLog.PawnsToMoveList(site);//pobranie ruchow dla nas
+								
+					//jezeli lista ruchow pusta lub sa na niej tylko pojedyncze to znaczy ze koniec wielobicia
+					if(moveList.isEmpty()||(moveList.getFirst()[0]==-1)){
+						if(site)site=false;else site=true;//zamiana stron
+						numbClick=0;//zerowanie klikniec
+						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+					} else {
+						plP.setSite(site);//wskazanie na panelu czyja kolej
+						//jezeli jest wielobicie
+						target=dest; //uaktualnienie celu zeby nie klikac znowa na pionka ktorym bijemy
+						numbClick=1; //przejscie odrazu do drugiego klikniecia
+						} 
+				} else {
+					//jezeli zwykle przesuniecie to zmien strony i wyzeruj klikniecia
+					if(site)site=false;else site=true;
+					numbClick=0;
+					plP.setSite(site);//wskazanie na panelu czyja kolej
+					}
+			
+				
+			} else {
+				JOptionPane.showMessageDialog(null, "Na to pole nie ma ruchu");
+				numbClick=0;
+				}
+			
+			
 		}
 		
 		
