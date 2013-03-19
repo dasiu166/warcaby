@@ -27,6 +27,7 @@ public class GameWindow extends JFrame implements ActionListener{
 	private JMenuItem JMINowaGra;
 	private JMenuItem JMIWyjdz;
 	private JMenuItem JMIReset;
+	private JMenuItem JMITest;
 	
 	private JMenu JMRuch;
 	private JMenuItem JMICofnij;
@@ -59,6 +60,9 @@ public class GameWindow extends JFrame implements ActionListener{
 		JMIWyjdz = new JMenuItem("Wyjdz"); //Pasek menu - Gra - Wyjdz
 		JMIWyjdz.addActionListener(this);
 		
+		JMITest = new JMenuItem("TEST");
+		JMITest.addActionListener(this);
+		
 		JMRuch = new JMenu("Ruch"); //Pasek menu - Ruch
 		JMICofnij = new JMenuItem("Cofnij"); //Pasek menu - Ruch - Cofnij
 		JMICofnij.addActionListener(this);
@@ -76,10 +80,11 @@ public class GameWindow extends JFrame implements ActionListener{
 		JMGra.add(JMINowaGra);
 		JMGra.add(JMIReset);
 		JMGra.add(JMIWyjdz);
+		JMGra.add(JMITest);
 		
 		pasekMenu.add(JMRuch);
 		JMRuch.add(JMICofnij);
-		JMRuch.add(JMIHistoria);
+		//JMRuch.add(JMIHistoria);
 		
 		pasekMenu.add(Box.createHorizontalGlue()); //Klej dla przesuniecia na prawo
 		pasekMenu.add(JMPomoc);
@@ -129,6 +134,10 @@ public class GameWindow extends JFrame implements ActionListener{
 		if (e.getSource() == JMIWyjdz){
 			JOptionPane.showMessageDialog(null, "Wyjscie");
 			this.dispose();
+		}
+		
+		if (e.getSource() == JMITest){
+			Gboard.testGUIBoard();
 		}
 		
 		//-------------------------------------------

@@ -40,6 +40,43 @@ public class Board {
 	public void setField(int r, int c, Field f) {
 		board[r][c] = f;
 	}
+	
+	public void makeTestBoard1(){
+		
+		rowChkField = -1;// reset zaznaczonych
+		colChkField = -1;// reset zanzaczonych
+		int r = 0;
+		int c = 0;
+		// uzupelnianie od gory
+		for (r = 0; r < 8; r++) {
+			if (r % 2 == 0) {
+
+				for (c = 0; c < 8; c++) {
+					if (c % 2 != 0) {
+						board[r][c] = new BlackField();// czarne pole
+					} else
+						board[r][c] = new WhiteField();// biale pole
+				}
+
+			} else {
+				for (c = 0; c < 8; c++) {
+					if (c % 2 == 0) {
+						board[r][c] = new BlackField();// czarne pole
+					} else
+						board[r][c] = new WhiteField();// biale pole
+				}
+			}
+		}
+		
+		((BlackField) board[6][1]).addPawn(new Pawn(r, c,false));
+		((BlackField) board[5][2]).addPawn(new Pawn(r, c,false));
+		((BlackField) board[6][5]).addPawn(new Pawn(r, c,false));
+		
+		((BlackField) board[1][0]).addPawn(new Pawn(r, c,true));
+		((BlackField) board[1][2]).addPawn(new Pawn(r, c,true));
+		((BlackField) board[1][4]).addPawn(new Pawn(r, c,true));
+		
+	}
 
 	public void makeBoard() {
 		/* */
@@ -279,8 +316,88 @@ public class Board {
 				for (int c = 0; c < 8; c++) {
 					if (board[r][c].getColor()) {// tylko pola czarne
 						BlackField bF = ((BlackField) board[r][c]);
-
 						int[] target = { r, c };
+						
+						//RUCH BEZ BICIA DLA DAMKI
+						if(bF.havePawn()){
+							if(bF.getPawn().isKing()){
+								
+									int v[] = new int[2];
+									
+									//perspektywa pionkow czerownych ale dziala dla wszystkich
+									v[0]=target[0];
+									v[1]=target[1];
+									//przod prawo
+									while (1==1){
+										System.out.println("przod prawo");
+										v[0]--;
+										v[1]++;
+										if (v[1]>7) break;
+										if (v[0]<0) break;
+										
+										//System.out.println(v[0]+"   "+v[1]);
+										if (this.checkOneMovePosibility(target, v, s)) {
+											int[] tab = { r, c, v[0], v[1] };
+											lista.add(tab);
+										} else break;
+									}
+									v[0]=target[0];
+									v[1]=target[1];
+									//przod lewo
+									System.out.println("przod lewo");
+									while (1==1){
+										v[0]--;
+										v[1]--;
+										if (v[1]<0) break;
+										if (v[0]<0) break;
+										
+										//System.out.println(v[0]+"   "+v[1]);
+										if (this.checkOneMovePosibility(target, v, s)) {
+											int[] tab = { r, c, v[0], v[1] };
+											lista.add(tab);
+										}else break;
+									}
+									v[0]=target[0];
+									v[1]=target[1];
+									//tyl lewo
+									System.out.println("tyl lewo");
+									while (1==1){
+										v[0]++;
+										v[1]--;
+										if (v[1]<0) break;
+										if (v[0]>7) break;
+										
+										//System.out.println(v[0]+"   "+v[1]);
+										if (this.checkOneMovePosibility(target, v, s)) {
+											int[] tab = { target[0], target[1], v[0], v[1] };
+											lista.add(tab);
+										}else break;
+									}
+									v[0]=target[0];
+									v[1]=target[1];
+									//tyl prawo
+									System.out.println("tyl prawo");
+									while (1==1){
+										v[0]++;
+										v[1]++;
+										if (v[1]>7) break;
+										if (v[0]>7) break;
+										
+										//System.out.println(v[0]+"   "+v[1]);
+										if (this.checkOneMovePosibility(target, v, s)) {
+											int[] tab = { r, c, v[0], v[1] };
+											lista.add(tab);
+										}else break;
+									}
+									//System.out.println("-----------------");
+							
+							continue; //przechodzi do nastepnej iteracji columny/wiersza
+							}
+						}
+						//----------------------------
+						
+						
+						
 						int[] v1 = new int[2];
 						int[] v2 = new int[2];
 						if (s) {
@@ -344,6 +461,19 @@ public class Board {
 
 			if (tF.getPawn().isKing()) {
 				// !!!DAMKA---------------------------------
+				/*Moze poruszac sie o dowolna ilosc pol, ale tylko po skosie
+				 * nie moze przeskakiwac swoich pionkow*/
+				System.out.println("DAMKA DAMKA DAMKA");
+				int rVal = tar[0]-dest[0]; //roznica wierszy celu i rzeznczenia
+				int cVal = tar[1]-dest[1]; //roznica kolumn celu i przeznaczenia
+				
+				//return true;
+				if (Math.abs(rVal)==Math.abs(cVal)){
+					if(dF.havePawn()){
+						if(dF.getPawn().getSide()==tF.getPawn().getSide()) return false;//jesli napotka pionka koloru damki to wyjdz
+					}
+					return true;
+				} else return false;
 
 			} else {
 				// !!!ZWYKLY PIONEK--------------------------
@@ -366,6 +496,17 @@ public class Board {
 
 			if (tF.getPawn().isKing()) {
 				// !!!DAMKA---------------------------------
+				/*Moze poruszac sie o dowolna ilosc pol, ale tylko po skosie
+				 * nie moze przeskakiwac swoich pionkow*/
+				
+				int rVal = tar[0]-dest[0]; //roznica wierszy celu i rzeznczenia
+				int cVal = tar[1]-dest[1]; //roznica kolumn celu i przeznaczenia
+				
+				//return true;
+				if (Math.abs(rVal)==Math.abs(cVal)){
+					System.out.println(rVal+" --- "+cVal);
+					return true;
+				} else return false;
 
 			} else {
 				// !!!ZWYKLY PIONEK--------------------------
@@ -409,7 +550,7 @@ public class Board {
 
 			if (tF.getPawn().isKing()) {
 				// !!!DAMKA---------------------------------
-
+				return false;
 			} else {
 				// !!!ZWYKLY PIONEK--------------------------
 
@@ -474,7 +615,7 @@ public class Board {
 
 			if (tF.getPawn().isKing()) {
 				// !!!DAMKA---------------------------------
-
+				return false;
 			} else {
 				// !!!ZWYKLY PIONEK--------------------------
 

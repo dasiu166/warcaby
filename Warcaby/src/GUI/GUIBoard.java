@@ -137,12 +137,12 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
    									GF_SIZE-12, 
    									GF_SIZE-12));
    							if(tmpPawn.isKing()){
-   								g2d.setColor(Color.orange);
+   								g2d.setColor(Color.WHITE);
    	   							g2d.fill(new Ellipse2D.Float(
-   	   									XSHIFT+(c*GF_SIZE)+12,
-   	   									YSHIFT+(r*GF_SIZE)+12, 
-   	   									GF_SIZE-24, 
-   	   									GF_SIZE-24));
+   	   									XSHIFT+(c*GF_SIZE)+18,
+   	   									YSHIFT+(r*GF_SIZE)+18, 
+   	   									GF_SIZE-36, 
+   	   									GF_SIZE-36));
    							}
    						} else {
    							//dolne pionki
@@ -165,12 +165,12 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
    									GF_SIZE-12, 
    									GF_SIZE-12));
    							if(tmpPawn.isKing()){
-   								g2d.setColor(Color.orange);
+   								g2d.setColor(Color.WHITE);
    	   							g2d.fill(new Ellipse2D.Float(
-   	   									XSHIFT+(c*GF_SIZE)+12,
-   	   									YSHIFT+(r*GF_SIZE)+12, 
-   	   									GF_SIZE-24, 
-   	   									GF_SIZE-24));
+   	   									XSHIFT+(c*GF_SIZE)+18,
+   	   									YSHIFT+(r*GF_SIZE)+18, 
+   	   									GF_SIZE-36, 
+   	   									GF_SIZE-36));
    							}
    						}
    					}
@@ -201,6 +201,12 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	public void resetGUIBoard(){
 		//resetuje plansze
 		boardLog.makeBoard();
+		repaint();
+	}
+	
+	public void testGUIBoard(){
+		//resetuje plansze
+		boardLog.makeTestBoard1();
 		repaint();
 	}
 	public void backMove(){
@@ -271,7 +277,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			point1st=e.getPoint();
 			target=CheckAndsetLightField(point1st);
 			
-			if((target[0]==-1)||(target[1]==-1)) numbClick=0;
+			if((target[0]==-1)||(target[1]==-1)) {
+				numbClick=0;
+				return;}
 			Iterator<int[]> i = moveList.iterator();
 			while(i.hasNext()){
 				int[] t = i.next();
@@ -294,7 +302,19 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			point2nd=e.getPoint();
 			dest=CheckAndsetLightField(point2nd);
 			//JOptionPane.showMessageDialog(null, "RUCH z "+target[0]+" "+target[1]+" DO "+dest[0]+" "+dest[1]);
+			if((dest[0]==-1)||(dest[1]==-1)) {
+				numbClick=0;
+				return;}
 			
+			if (boardLog.getField(dest[0], dest[1]).getColor()){
+				if (((BlackField)boardLog.getField(dest[0], dest[1])).havePawn()){
+					if (((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().getSide()==site){
+						numbClick=1;
+						target=dest;
+						return;
+					}
+				}
+			}
 			
 			Iterator<int[]> i = moveList.iterator();
 			while(i.hasNext()){
@@ -304,8 +324,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				}
 			}
 			
-			//------WERSJA permisionto single move ROBOCZA NIEEFEKTYWNA
-			if(is){
+			
+			if(is){ //jezeli przeznaczenie jest na liscie
 		
 				boardLog.doMove(target, dest,site);
 				plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
@@ -313,24 +333,31 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				plP.setSite(!site);//wskazanie na panelu czyja kolej
 				
 				if(moveList.getFirst()[0]!=-1){ //jezeli nasz ruch nie byl zwyklym przesunieciem
-				moveList=boardLog.PawnsToMoveList(site);//pobranie ruchow dla nas
+				moveList=boardLog.PawnsToMoveList(site);//pobranie kolejnych mozliwych ruchow dla nas
 								
 					//jezeli lista ruchow pusta lub sa na niej tylko pojedyncze to znaczy ze koniec wielobicia
 					if(moveList.isEmpty()||(moveList.getFirst()[0]==-1)){
+						
 						if(site)site=false;else site=true;//zamiana stron
 						numbClick=0;//zerowanie klikniec
+						//(down) sprawdz czy pionke moze stac sie damka
 						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
-					} else {
-						plP.setSite(site);//wskazanie na panelu czyja kolej
-						//jezeli jest wielobicie
+					
+					} else {//jezeli jest wielobicie
+						
+						plP.setSite(site);//wskazanie na panelu czyja kolej (teraz znowu nasza)
 						target=dest; //uaktualnienie celu zeby nie klikac znowa na pionka ktorym bijemy
 						numbClick=1; //przejscie odrazu do drugiego klikniecia
-						} 
+						
+					} 
 				} else {
 					//jezeli zwykle przesuniecie to zmien strony i wyzeruj klikniecia
 					if(site)site=false;else site=true;
 					numbClick=0;
 					plP.setSite(site);//wskazanie na panelu czyja kolej
+					//(down) sprawdz czy pionke moze stac sie damka
+					((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+
 					}
 			
 				
