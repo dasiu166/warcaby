@@ -68,13 +68,22 @@ public class Board {
 			}
 		}
 		
-		((BlackField) board[6][1]).addPawn(new Pawn(r, c,false));
+		/*((BlackField) board[6][1]).addPawn(new Pawn(r, c,false));
 		((BlackField) board[5][2]).addPawn(new Pawn(r, c,false));
 		((BlackField) board[6][5]).addPawn(new Pawn(r, c,false));
 		
 		((BlackField) board[1][0]).addPawn(new Pawn(r, c,true));
 		((BlackField) board[1][2]).addPawn(new Pawn(r, c,true));
-		((BlackField) board[1][4]).addPawn(new Pawn(r, c,true));
+		((BlackField) board[1][4]).addPawn(new Pawn(r, c,true));*/
+		
+		Pawn p1 = new Pawn(r, c,false);
+		((BlackField) board[5][2]).addPawn(p1);
+		//((BlackField) board[4][3]).addPawn(p1);
+		((BlackField) board[5][6]).addPawn(p1);
+		//((BlackField) board[4][5]).addPawn(p1);
+		Pawn p2 = new Pawn(r, c,true);
+		p2.setKing();
+		((BlackField) board[3][4]).addPawn(p2);
 		
 	}
 
@@ -279,13 +288,115 @@ public class Board {
 			for (int c = 0; c < 8; c++) {
 				if (board[r][c].getColor()) {// tylko pola czarne
 					BlackField bF = ((BlackField) board[r][c]);
-
 					int[] target = { r, c };
+					
+					
+					
+					if (bF.havePawn()){//damki
+						//-2 powazny blad
+						//-1 gdy napotka swojego
+						//0 gdy napotka obcego
+						//1 gdy napotka puste
+						if (bF.getPawn().isKing()){
+							int[] v1 = { target[0] - 1, target[1] - 1 };
+							int[] v2 = { target[0] + 1, target[1] - 1 };
+							int[] v3 = { target[0] - 1, target[1] + 1 };
+							int[] v4 = { target[0] + 1, target[1] + 1 };
+							
+							int wynik=0;
+							int wb=0; //wykryto bicie
+							while (1==1){
+								if (wynik==-100) break;
+								v1[0]--; v1[1]--;
+								if((v1[0]<0)||(v1[1]<0)) break;
+								wynik=this.checkKingBeatPosibility(target, v1, s);
+								System.out.println("Przod lewo!!!!!!!!!!!!!!!!!!!!!! "+v1[0]+"   "+v1[1]+" wynik = "+wynik);
+								if (wynik==1) continue;
+								if(wynik==0){
+									int[] v = {v1[0]--, v1[1]--};
+									int w = this.checkKingBeatPosibility(target, v , s);
+									//System.out.println("W===== "+w+" "+v[0]+" "+v[1]);
+									if(w==0){
+										int[] t = {target[0], target[1], v[0], v[1]};
+										lista.add(t);
+									} else wynik=-100;
+								} else break;
+							}
+							
+							while (1==1){
+								if (wynik==-101) break;
+								v2[0]++; v2[1]--;
+								if((v2[0]>7)||(v2[1]<0)) break;
+								
+								wynik=this.checkKingBeatPosibility(target, v2, s);
+								System.out.println("tyl lewo!!!!!!!!!!!!!!!!!!!!!! "+v2[0]+"   "+v2[1]+" wynik = "+wynik);
 
+								if(wynik==1) continue;
+								if(wynik==0){
+									int[] v = {v2[0]++, v2[1]--};
+									int w = this.checkKingBeatPosibility(target, v , s);
+									//System.out.println("W===== "+w+" "+v[0]+" "+v[1]);
+									if(w==0){
+										int[] t = {target[0], target[1], v[0], v[1]};
+										lista.add(t);
+									} else wynik=-101;
+								} else break;
+								
+							}
+							
+							while (1==1){
+								if (wynik==-102) break;
+								v3[0]--; v3[1]++;
+								if((v3[0]<0)||(v3[1]>7)) break;
+
+								wynik=this.checkKingBeatPosibility(target, v3, s);
+								
+								if(wynik==1) continue;
+								if(wynik==0){
+									int[] v = {v3[0]--, v3[1]++};
+									int w = this.checkKingBeatPosibility(target, v , s);
+									//System.out.println("W===== "+w+" "+v[0]+" "+v[1]);
+									System.out.println("Przod prawo!!!!!!!!!!!!!!!!!!!!!! "+v3[0]+"   "+v3[1]+" wynik = "+wynik);
+
+									if(w==0){
+										int[] t = {target[0], target[1], v[0], v[1]};
+										lista.add(t);
+									} else wynik=-102;
+								} else break;
+							}
+							
+							while (1==1){
+								if (wynik==-103) break;
+								v4[0]++; v4[1]++;
+								if((v4[0]>7)||(v4[1]>7)) break;
+								
+								wynik=this.checkKingBeatPosibility(target, v4, s);
+								
+								if(wynik==1) continue;
+								if(wynik==0){
+									int[] v = {v4[0]++, v4[1]++};
+									int w = this.checkKingBeatPosibility(target, v , s);
+									//System.out.println("W===== "+w+" "+v[0]+" "+v[1]);
+
+									if(w==0){
+										int[] t = {target[0], target[1], v[0], v[1]};
+										lista.add(t);
+									} else wynik=-103;
+								} else break;
+								
+							}
+							
+							//}//end while
+							
+						}
+						continue;
+					}
+					
 					int[] v1 = { target[0] - 2, target[1] - 2 };
 					int[] v2 = { target[0] + 2, target[1] - 2 };
 					int[] v3 = { target[0] - 2, target[1] + 2 };
 					int[] v4 = { target[0] + 2, target[1] + 2 };
+					
 
 					if (this.checkBeatPosibility(target, v1, s)) {
 						int[] tab = { r, c, v1[0], v1[1] };
@@ -525,6 +636,83 @@ public class Board {
 		return false;
 
 	}
+	
+	public int checkKingBeatPosibility (int[] tar, int[] dest, boolean s){
+		//-2 powazny blad
+		//-1 gdy napotka swojego
+		//0 gdy napotka obcego
+		//1 gdy napotka puste
+		
+		if ((tar[0] < 0) || (tar[1] < 0) || (dest[0] < 0) || (dest[1] < 0))
+			return -2;
+		if ((tar[0] > 7) || (tar[1] > 7) || (dest[0] > 7) || (dest[1] > 7))
+			return -2;
+
+		BlackField tF = (BlackField) this.getField(tar[0], tar[1]);
+		BlackField dF = (BlackField) this.getField(dest[0], dest[1]);
+		
+		if (dF.havePawn()){
+			if(dF.getPawn().getSide()==s) return -1;
+		}
+		
+		int rR = tar[0]-dest[0];//roznica wiersze
+		int rC = tar[1]-dest[1];//roznica kolumn
+		//System.out.println("rR = "+rR+" rC = "+rC);
+		if (rR >=2){//przod
+			if (rC >=2){//lewa strona
+				Pawn tmpP = ((BlackField)board[tar[0]-(rR-1)][tar[1]-(rC-1)]).getPawn();
+				if(tmpP==null) return 1;
+				if(tmpP.getSide()==s) return -1;
+				if(tmpP.getSide()!=s) {
+					if(dF.havePawn()) {
+						if (dF.getPawn().getSide()==tmpP.getSide()) return -2;
+						}
+					return 0;
+					}
+			}
+			
+			if (rC <=-2){//prawa strona
+				Pawn tmpP = ((BlackField)board[tar[0]-(rR-1)][tar[1]+(rR-1)]).getPawn();
+				if(tmpP==null) return 1;
+				if(tmpP.getSide()==s) return -1;
+				if(tmpP.getSide()!=s) {
+					if(dF.havePawn()) {
+						if (dF.getPawn().getSide()==tmpP.getSide()) return -2;
+						}
+					return 0;
+					}
+			}
+		}
+		
+		if (rR <=-2){//tyl
+			if (rC >=2){//lewa strona
+				Pawn tmpP = ((BlackField)board[tar[0]+(rC-1)][tar[1]-(rC-1)]).getPawn();
+				if(tmpP==null) return 1;
+				if(tmpP.getSide()==s) return -1;
+				if(tmpP.getSide()!=s) {
+					if(dF.havePawn()) {
+						if (dF.getPawn().getSide()==tmpP.getSide()) return -2;
+						}
+					return 0;
+					}
+			}
+			
+			if (rC <=-2){//prawa strona
+				Pawn tmpP = ((BlackField)board[tar[0]+(-rR-1)][tar[1]+(-rR-1)]).getPawn();
+				if(tmpP==null) return 1;
+				if(tmpP.getSide()==s) return -1;
+				if(tmpP.getSide()!=s) {
+					if(dF.havePawn()) {
+					if (dF.getPawn().getSide()==tmpP.getSide()) return -2;
+					}
+					return 0;
+					}
+			}
+		}
+		
+		
+		return -2;
+	}
 
 	public boolean checkBeatPosibility(int[] tar, int[] dest, boolean s) {
 		// !!!Bardzo wazne, inaczej wyjdzie blad indexu tabeli
@@ -549,8 +737,7 @@ public class Board {
 			// !!!Gracz 1 - (Dol planszy)-------------------
 
 			if (tF.getPawn().isKing()) {
-				// !!!DAMKA---------------------------------
-				return false;
+				
 			} else {
 				// !!!ZWYKLY PIONEK--------------------------
 

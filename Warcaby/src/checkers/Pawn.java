@@ -22,6 +22,9 @@ public class Pawn {
 	public boolean getSide(){
 		return side;
 	}
+	public void setKing(){
+		king=true;
+	}
 	public int getRow(){
 		return row;
 	}
