@@ -16,8 +16,20 @@ public class Board {
 	 */
 	private int rowChkField = -1;// wiersz zaznaczonego pionka
 	private int colChkField = -1;// kolumna zaznaczonego pionka
-	private int[] pawnToRemove;
-
+	
+	private LinkedList<int[]> pawnsToRemove = new LinkedList<int[]>(); //pionki oznaczone jako do usuniecia bo biciu (potrzebne do cofniecia ruchu)
+	private int[] possStart = {-1,-1}; //pozycja pionka przed biciem
+	
+	public void setPossStart(int[] t){
+		possStart=t;
+	}
+	public int[] getPossStart(){
+		return possStart;
+	}
+	public void clearPawnsToRemoveList(){
+		pawnsToRemove.clear();
+	}
+	
 	public void setRowChkF(int r) {
 		rowChkField = r;
 	}
@@ -80,11 +92,11 @@ public class Board {
 		 */
 
 		Pawn p1 = new Pawn(r, c, false);
-		((BlackField) board[2][3]).addPawn(p1);
-		((BlackField) board[2][5]).addPawn(p1);
-		((BlackField) board[4][3]).addPawn(p1);
-		((BlackField) board[5][6]).addPawn(p1);
-		((BlackField) board[4][5]).addPawn(p1);
+		((BlackField) board[1][2]).addPawn(p1);
+		//((BlackField) board[2][5]).addPawn(p1);
+		//((BlackField) board[4][3]).addPawn(p1);
+		//((BlackField) board[5][6]).addPawn(p1);
+		//((BlackField) board[4][5]).addPawn(p1);
 		Pawn p2 = new Pawn(r, c, true);
 		p2.setKing();
 		((BlackField) board[3][4]).addPawn(p2);
@@ -152,6 +164,7 @@ public class Board {
 	}
 
 	public void doMove(int[] tar, int[] dest) {
+		//zwykle przenisienie pionkow
 		BlackField tF = (BlackField) this.getField(tar[0], tar[1]);
 		BlackField dF = (BlackField) this.getField(dest[0], dest[1]);
 
@@ -172,92 +185,94 @@ public class Board {
 
 		this.setField(tar[0], tar[1], tF);
 		this.setField(dest[0], dest[1], dF);
-
-		if (s) {
-
-			// gdy chcemy bic pionka do przodu
-			if (tar[0] - dest[0] == 2) {
-				if (tar[1] - dest[1] == 2) {// lewa strona
-					Pawn tmpP = ((BlackField) board[tar[0] - 1][tar[1] - 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] - 1][tar[1] - 1]).removePawn();
-				} else {// prawa strona
-					Pawn tmpP = ((BlackField) board[tar[0] - 1][tar[1] + 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-					((BlackField) board[tar[0] - 1][tar[1] + 1]).removePawn();
+		
+		int rR = tar[0]-dest[0];
+		int cR = tar[1]-dest[1];
+		
+			if ((rR>0)&&(cR>0)){ //przod lewy
+				//System.out.println("Do zbicia");
+				int c = tar[1];
+				for(int r=tar[0]-1;r>dest[0];r--){
+						c--;
+						if(((BlackField) board[r][c]).havePawn()){
+							int[] t = {r,c};
+							pawnsToRemove.add(t);
+						}
+						((BlackField) board[r][c]).removePawn();
+						//System.out.println("Do zbicia "+r+"  "+c);
 				}
+				return;	
 			}
-
-			// gdy chcemy bic pionka do tylu
-			if (tar[0] - dest[0] == -2) {
-				if (tar[1] - dest[1] == -2) {// lewa strona
-					Pawn tmpP = ((BlackField) board[tar[0] + 1][tar[1] + 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] + 1][tar[1] + 1]).removePawn();
-
-				} else {// prawa strona
-					Pawn tmpP = ((BlackField) board[tar[0] + 1][tar[1] - 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] + 1][tar[1] - 1]).removePawn();
-
+			
+			if ((rR>0)&&(cR<0)){ //przod prawy
+				System.out.println("Do zbicia");
+				int c = tar[1];
+				for(int r=tar[0]-1;r>dest[0];r--){
+						c++;
+						if(((BlackField) board[r][c]).havePawn()){
+							int[] t = {r,c};
+							pawnsToRemove.add(t);
+						}
+						((BlackField) board[r][c]).removePawn();
 				}
+				return;	
 			}
-
-		} else {
-			// gdy chcemy bic pionka do przodu
-			if (tar[0] - dest[0] == -2) {
-				if (tar[1] - dest[1] == -2) {// lewa strona
-					Pawn tmpP = ((BlackField) board[tar[0] + 1][tar[1] + 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] + 1][tar[1] + 1]).removePawn();
-
-				} else {// prawa strona
-					Pawn tmpP = ((BlackField) board[tar[0] + 1][tar[1] - 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] + 1][tar[1] - 1]).removePawn();
-
+			
+			if ((rR<0)&&(cR>0)){ //tyl prawy
+				System.out.println("Do zbicia");
+				int c = tar[1];
+				for(int r=tar[0]+1;r<dest[0];r++){
+						c--;
+						if(((BlackField) board[r][c]).havePawn()){
+							int[] t = {r,c};
+							pawnsToRemove.add(t);
+						}
+						((BlackField) board[r][c]).removePawn();
 				}
+				return;	
 			}
-			// gdy chcemy bic pionka do tylu
-			if (tar[0] - dest[0] == 2) {
-				if (tar[1] - dest[1] == 2) {// lewa strona
-					Pawn tmpP = ((BlackField) board[tar[0] - 1][tar[1] - 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] - 1][tar[1] - 1]).removePawn();
-
-				} else {// prawa strona
-					Pawn tmpP = ((BlackField) board[tar[0] - 1][tar[1] + 1])
-							.getPawn();
-					if (tmpP == null)
-						return;
-
-					((BlackField) board[tar[0] - 1][tar[1] + 1]).removePawn();
-
+			
+			if ((rR<0)&&(cR<0)){// tyl prawy
+				System.out.println("Do zbicia");
+				int c = tar[1];
+				for(int r=tar[0]+1;r<dest[0];r++){
+						c++;
+						if(((BlackField) board[r][c]).havePawn()){
+							int[] t = {r,c};
+							pawnsToRemove.add(t);
+						}
+						((BlackField) board[r][c]).removePawn();
 				}
+				return;	
 			}
-
+	}
+	
+	public void backMove(boolean s){
+		//if((possStart==null)||(possStart[0]==-1)||(possStart[1]==-1)) return;
+		if(pawnsToRemove==null) return;
+		if(!pawnsToRemove.isEmpty()){
+		if(s){//minela kolej gracza niebieskiego (teraz czerowny)
+			//((BlackField)board[possStart[0]][possStart[1]]).addPawn(new Pawn(!s));
+			
+			
+			Iterator<int[]> i = pawnsToRemove.iterator();
+			while(i.hasNext()){
+				int[] t = i.next();
+				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(s));//zwroc czerwone
+			}
+			
+			
+		} else { //na odwrot
+			
+			//((BlackField)board[possStart[0]][possStart[1]]).addPawn(new Pawn(!s));
+			Iterator<int[]> i = pawnsToRemove.iterator();
+			while(i.hasNext()){
+				int[] t = i.next();
+				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(!s));
+			}
+			
 		}
-
+	}
 	}
 
 	public int getLostPawnsNumb(boolean s) {
@@ -297,8 +312,9 @@ public class Board {
 					if (bF.havePawn()) {// damki
 						if (bF.getPawn().isKing()) {
 							this.checkKingBeat(target, lista, s);
+							continue;
 						}
-						continue;
+						
 					}
 
 					int[] v1 = { target[0] - 2, target[1] - 2 };
@@ -506,7 +522,6 @@ public class Board {
 												// rzeznczenia
 				int cVal = tar[1] - dest[1]; // roznica kolumn celu i
 												// przeznaczenia
-
 				// return true;
 				if (Math.abs(rVal) == Math.abs(cVal)) {
 					if (dF.havePawn()) {
@@ -764,7 +779,6 @@ public class Board {
 							return false;
 						if (tmpP.getSide() != tF.getPawn().getSide()) {
 							// jezeli to pionek przeciwnika(up) to usun(down)
-
 							return true;
 						} else
 							return false;
@@ -839,6 +853,17 @@ public class Board {
 			}
 		}
 
+		return false;
+	}
+	
+	public boolean checkGameStatus(){
+		//zwraca true jezeli gra zakonczona (remis/wygrana)
+		
+		int red = this.getLostPawnsNumb(true);
+		int blue = this.getLostPawnsNumb(false);
+		System.out.print("RED "+red+"  BLUE "+blue);
+		if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
+		
 		return false;
 	}
 

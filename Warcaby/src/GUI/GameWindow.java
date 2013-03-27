@@ -40,6 +40,8 @@ public class GameWindow extends JFrame implements ActionListener{
 	
 	private GUIBoard Gboard;
 	private PlayersPanel playersP;
+	private GameOptions Goptions;
+	private GameOptionPanel GoptionPanel;
 	
 	public GameWindow(){
 	
@@ -96,10 +98,13 @@ public class GameWindow extends JFrame implements ActionListener{
 		playersP.setVisible(true);
 		this.getContentPane().add(playersP, BorderLayout.NORTH);
 		
+		//##OPCJE##
+		GoptionPanel = new GameOptionPanel();
+		
 		
 		//##PLANSZA##
 		Gboard = new GUIBoard();
-		Gboard.setVisible(true);
+		Gboard.setVisible(false);
 		Gboard.setPlP(playersP);//dla licznika
 		JPanel midleP = new JPanel();
 		midleP.setLayout(new BoxLayout(midleP, BoxLayout.PAGE_AXIS));
@@ -108,6 +113,8 @@ public class GameWindow extends JFrame implements ActionListener{
 		midleP.add(Box.createVerticalGlue());
 		midleP.add(Gboard, Box.CENTER_ALIGNMENT);
 		midleP.add(Box.createRigidArea(new Dimension(0, 100)));
+		
+		
 		
 
 		//##OKNO##
@@ -118,17 +125,23 @@ public class GameWindow extends JFrame implements ActionListener{
 		this.setLocationRelativeTo(null);
 	}
 	
-	
+	public void startGame(boolean strona){
+		Gboard.setVisible(true);
+		Gboard.resetGUIBoard(strona);
+	}
 	
 	public void actionPerformed(ActionEvent e){
 		if (e.getSource() == JMINowaGra){
-			JOptionPane.showMessageDialog(null, "Nowa gra");
-			Gboard.resetGUIBoard();
+			//JOptionPane.showMessageDialog(null, "Nowa gra");
+			
+			Goptions = new GameOptions(this);
+			Goptions.setVisible(true);
+			
 		}
 		
 		if (e.getSource() == JMIReset){
 			JOptionPane.showMessageDialog(null, "Reset");
-			Gboard.resetGUIBoard();
+			Gboard.resetGUIBoard(true);
 		}
 		
 		if (e.getSource() == JMIWyjdz){

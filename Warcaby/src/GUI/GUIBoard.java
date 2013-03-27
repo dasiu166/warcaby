@@ -60,7 +60,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	//BEGIN###INNE
 	private int numbClick; //liczy klikniecia w plansze
-	private boolean site=true; //strona ktora moze sie przesunac - zaczyna dol
+	private boolean site; //strona ktora moze sie przesunac - zaczyna dol
 	private Point point1st; //wsp pierwszego klikniecia
 	private Point point2nd; //wsp drugiego klikniecia
 	
@@ -198,9 +198,10 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		tmpBoard=boardLog;
 	}
 	
-	public void resetGUIBoard(){
+	public void resetGUIBoard(boolean s){
 		//resetuje plansze
 		boardLog.makeBoard();
+		site=s;
 		repaint();
 	}
 	
@@ -211,40 +212,26 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	}
 	public void backMove(){
 		//cofa ostatni ruch
-		boardLog.doMove(dest, target);
+		if((boardLog.getPossStart()==null)) return;
+
+		if((boardLog.getPossStart()[0]==-1)) return;
 		
-		//dodawanie pionka w przypadku usuniecia
-		if(!site){
-		if (target[0]-dest[0]==2){
-			if(target[1]-dest[1]==2) 
-				((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
-			if(target[1]-dest[1]==-2) 
-				((BlackField)boardLog.getField(target[0]-1, target[1]+1)).addPawn(new Pawn(site));
+		if(numbClick==1) {
+			JOptionPane.showMessageDialog(null, "Nie wykonales ruchu");
+			return;
 		}
-		if (target[0]-dest[0]==-2){
-			if(target[1]-dest[1]==2) 
-				((BlackField)boardLog.getField(target[0]+1, target[1]-1)).addPawn(new Pawn(site));
-			if(target[1]-dest[1]==-2) 
-				((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
-		}
-		} else {
-			if (target[0]-dest[0]==2){
-				if(target[1]-dest[1]==2) 
-					((BlackField)boardLog.getField(target[0]-1, target[1]-1)).addPawn(new Pawn(site));
-				if(target[1]-dest[1]==-2) 
-					((BlackField)boardLog.getField(target[0]-1, target[1]+1)).addPawn(new Pawn(site));
-			}
-			if (target[0]-dest[0]==-2){
-				if(target[1]-dest[1]==2) 
-					((BlackField)boardLog.getField(target[0]+1, target[1]-1)).addPawn(new Pawn(site));
-				if(target[1]-dest[1]==-2) 
-					((BlackField)boardLog.getField(target[0]+1, target[1]+1)).addPawn(new Pawn(site));
-			}
+		
 			
-		}
+		boardLog.doMove(dest, boardLog.getPossStart());
 		
-		
+		boardLog.backMove(site);
 		site=!site; //cofniecie zmiany stron
+		
+		plP.setSite(site);
+		plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
+		plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
+		boardLog.clearPawnsToRemoveList();
+		boardLog.setPossStart(null);
 		repaint();
 	}
 	public void setPlP(PlayersPanel p){
@@ -279,12 +266,17 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			if((target[0]==-1)||(target[1]==-1)) {
 				numbClick=0;
-				return;}
+				return;
+				}
 			Iterator<int[]> i = moveList.iterator();
 			while(i.hasNext()){
 				int[] t = i.next();
 				if((t[0]==target[0])&&(t[1]==target[1])){
+					boardLog.setPossStart(null);
+					boardLog.clearPawnsToRemoveList();
 					is=true;
+					boardLog.setPossStart(target);//dla cofania ruchu
+					break;
 				}
 			}
 			if(!is){
@@ -309,9 +301,19 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			if (boardLog.getField(dest[0], dest[1]).getColor()){
 				if (((BlackField)boardLog.getField(dest[0], dest[1])).havePawn()){
 					if (((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().getSide()==site){
-						numbClick=1;
-						target=dest;
+						Iterator<int[]> i = moveList.iterator();
+						while(i.hasNext()){
+							int[] t = i.next();
+							if((t[0]==dest[0])&&(t[1]==dest[1])){
+								numbClick=1;
+								target=dest;
+								return;	
+							}
+						}
+						numbClick=0;
+						JOptionPane.showMessageDialog(null, "Tym pionkiem nie ma ruchu");
 						return;
+						
 					}
 				}
 			}
@@ -327,7 +329,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			if(is){ //jezeli przeznaczenie jest na liscie
 		
-				boardLog.doMove(target, dest,site);
+				boardLog.doMove(target, dest,site); //!!!TU uruchamaia sie caly mechaniz warcab
+				
+				
 				plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
 				plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
 				plP.setSite(!site);//wskazanie na panelu czyja kolej
@@ -359,7 +363,10 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 					((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
 
 					}
-			
+				//sprawdzanie wygranej
+			if(boardLog.checkGameStatus()){
+				JOptionPane.showMessageDialog(null, "Wygrales");
+			}
 				
 			} else {
 				JOptionPane.showMessageDialog(null, "Na to pole nie ma ruchu");
