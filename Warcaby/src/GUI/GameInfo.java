@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,7 +22,7 @@ public class GameInfo extends JPanel implements ActionListener {
 	private JTabbedPane JTPpanel;//zakladki
 	private boolean s;
 	private JPanel mPanel;//ruchy
-	private JTextArea JTAmoves;
+	private JEditorPane JEPmoves;
 	private JScrollPane JSPmoves;
 	private JPanel hPanel;//historia
 	
@@ -30,20 +31,22 @@ public class GameInfo extends JPanel implements ActionListener {
 		
 		JTPpanel = new JTabbedPane();
 		
+		//RUCHY
 		mPanel = new JPanel(new BorderLayout());
-		JTAmoves = new JTextArea("Mo¿liwe ruchy");
-		JTAmoves.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-		JTAmoves.setEditable(false);
-		JSPmoves = new JScrollPane(JTAmoves);
+		JEPmoves = new JEditorPane();
+		JEPmoves.setContentType("text/html");
+		JEPmoves.setText("<center>Mozliwe ruchy</center>");
+		JEPmoves.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		JEPmoves.setEditable(false);
+		JSPmoves = new JScrollPane(JEPmoves);
 		
-		
-		//JSPmoves.add(JTAmoves);
 		JSPmoves.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		mPanel.add(JSPmoves,BorderLayout.CENTER);
 		JTPpanel.addTab("Ruchy", mPanel);
 		
-		hPanel = new JPanel();
 		
+		//HISTORIA
+		hPanel = new JPanel();
 		JTPpanel.addTab("Historia", hPanel);
 		
 		this.add(JTPpanel);
@@ -64,17 +67,15 @@ public class GameInfo extends JPanel implements ActionListener {
 			
 			if((tab[0]!=tmp[0])||(tab[1]!=tmp[1])){
 				tmp=tab;
-				text+="\n\n<<Pionek "+tab[0]+"  "+tab[1]+" ### ";
-				text+="     >>Cel "+tab[2]+"  "+tab[3]+"";
+				text+="<br> Pionek <b>"+tab[0]+" &nbsp "+tab[1]+"</b> ### ";
+				text+="&nbsp ->> Cel <b>"+tab[2]+" &nbsp "+tab[3]+"</b> ";
 			} else {
-				text+="     >>Cel "+tab[2]+"  "+tab[3]+"";
+				text+="&nbsp ->> Cel <b>"+tab[2]+" &nbsp "+tab[3]+"</b> ";
 			}
 			
-			
-			
-			
-		}
-		JTAmoves.setText("Mozliwe ruchy\n"+text);
+			}
+		
+		JEPmoves.setText("<center>Mozliwe ruchy</center>"+text);
 	}
 	
 	

@@ -1,7 +1,9 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -47,10 +49,8 @@ public class GameWindow extends JFrame implements ActionListener{
 	private GameInfo Ginfo;
 	
 	
-	public GameWindow(){
-	
-		
-		
+	public GameWindow(){		
+
 		//##PASEK MENU##
 		pasekMenu = new JMenuBar();
 		
@@ -138,6 +138,8 @@ public class GameWindow extends JFrame implements ActionListener{
 		this.setTitle("Warcaby");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		
 	}
 	
 	public void startGame(boolean strona){
