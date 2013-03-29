@@ -40,7 +40,7 @@ public class PlayersPanel extends JPanel {
 		
 		
 		
-		this.setLayout(new FlowLayout(FlowLayout.CENTER,50,15));
+		this.setLayout(new FlowLayout(FlowLayout.CENTER,50,10));
 		this.add(p1P);
 		this.add(plSite);
 		this.add(p2P);

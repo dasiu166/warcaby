@@ -33,6 +33,9 @@ public class GameWindow extends JFrame implements ActionListener{
 	private JMenuItem JMICofnij;
 	private JMenuItem JMIHistoria;
 	
+	private JMenu JMWidok;
+	private JMenuItem JMIGameInfo;
+	
 	private JMenu JMPomoc;
 	private JMenuItem JMIInfo;
 	
@@ -41,7 +44,8 @@ public class GameWindow extends JFrame implements ActionListener{
 	private GUIBoard Gboard;
 	private PlayersPanel playersP;
 	private GameOptions Goptions;
-	private GameOptionPanel GoptionPanel;
+	private GameInfo Ginfo;
+	
 	
 	public GameWindow(){
 	
@@ -70,6 +74,10 @@ public class GameWindow extends JFrame implements ActionListener{
 		JMICofnij.addActionListener(this);
 		JMIHistoria = new JMenuItem("Historia"); //Pasek menu - Ruch - Historia
 		
+		JMWidok = new JMenu("Widok");
+		JMIGameInfo = new JMenuItem("Pokaz/Ukryj Info");
+		JMIGameInfo.addActionListener(this);
+		
 		JMPomoc = new JMenu("Pomoc"); //Pasek menu - Pomoc
 		JMIInfo = new JMenuItem("O programie"); //Pasek menu - Pomoc - O programie
 		
@@ -88,6 +96,9 @@ public class GameWindow extends JFrame implements ActionListener{
 		JMRuch.add(JMICofnij);
 		//JMRuch.add(JMIHistoria);
 		
+		pasekMenu.add(JMWidok);
+		JMWidok.add(JMIGameInfo);
+		
 		pasekMenu.add(Box.createHorizontalGlue()); //Klej dla przesuniecia na prawo
 		pasekMenu.add(JMPomoc);
 		JMPomoc.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -99,7 +110,7 @@ public class GameWindow extends JFrame implements ActionListener{
 		this.getContentPane().add(playersP, BorderLayout.NORTH);
 		
 		//##OPCJE##
-		GoptionPanel = new GameOptionPanel();
+		
 		
 		
 		//##PLANSZA##
@@ -110,16 +121,20 @@ public class GameWindow extends JFrame implements ActionListener{
 		midleP.setLayout(new BoxLayout(midleP, BoxLayout.PAGE_AXIS));
 		this.add(midleP);
 		
-		midleP.add(Box.createVerticalGlue());
+		
 		midleP.add(Gboard, Box.CENTER_ALIGNMENT);
-		midleP.add(Box.createRigidArea(new Dimension(0, 100)));
-		
-		
+		midleP.add(Box.createRigidArea(new Dimension(0, 0)));
+		//midleP.add(Box.createVerticalGlue());
+		//##INFO##
+		Ginfo = new GameInfo();
+		Ginfo.setVisible(false);
+		midleP.add(Ginfo, Box.CENTER_ALIGNMENT);
+		Gboard.setGinfo(Ginfo);
 		
 
 		//##OKNO##
 
-		this.setSize(800, 600);
+		this.setSize(800, 730);
 		this.setTitle("Warcaby");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -133,6 +148,7 @@ public class GameWindow extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		if (e.getSource() == JMINowaGra){
 			//JOptionPane.showMessageDialog(null, "Nowa gra");
+			this.setEnabled(false);//zablokowanie okna
 			
 			Goptions = new GameOptions(this);
 			Goptions.setVisible(true);
@@ -157,6 +173,11 @@ public class GameWindow extends JFrame implements ActionListener{
 		
 		if (e.getSource() == JMICofnij){
 			Gboard.backMove();
+		}
+		//------------------------------------------
+		if (e.getSource() == JMIGameInfo){
+			if(Ginfo.isVisible())
+			Ginfo.setVisible(false); else Ginfo.setVisible(true);
 		}
 	}
 	

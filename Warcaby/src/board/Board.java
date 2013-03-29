@@ -251,27 +251,12 @@ public class Board {
 		//if((possStart==null)||(possStart[0]==-1)||(possStart[1]==-1)) return;
 		if(pawnsToRemove==null) return;
 		if(!pawnsToRemove.isEmpty()){
-		if(s){//minela kolej gracza niebieskiego (teraz czerowny)
-			//((BlackField)board[possStart[0]][possStart[1]]).addPawn(new Pawn(!s));
-			
-			
+		
 			Iterator<int[]> i = pawnsToRemove.iterator();
 			while(i.hasNext()){
 				int[] t = i.next();
-				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(s));//zwroc czerwone
+				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(!s));//zwroc odwrotny kolor
 			}
-			
-			
-		} else { //na odwrot
-			
-			//((BlackField)board[possStart[0]][possStart[1]]).addPawn(new Pawn(!s));
-			Iterator<int[]> i = pawnsToRemove.iterator();
-			while(i.hasNext()){
-				int[] t = i.next();
-				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(!s));
-			}
-			
-		}
 	}
 	}
 
@@ -856,16 +841,20 @@ public class Board {
 		return false;
 	}
 	
-	public boolean checkGameStatus(){
+	public boolean checkGameStatus(LinkedList<int[]> moveL){
 		//zwraca true jezeli gra zakonczona (remis/wygrana)
 		
 		int red = this.getLostPawnsNumb(true);
 		int blue = this.getLostPawnsNumb(false);
 		System.out.print("RED "+red+"  BLUE "+blue);
-		if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
+		if(moveL.isEmpty()) return true;//jezeli brak ruchow
+		if((moveL.size()==1)&&(moveL.getFirst()[0]==-1)) return true;
+		//if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
 		
 		return false;
 	}
+	
+	
 
 	public static void main(String[] args) {
 		Board board = new Board();

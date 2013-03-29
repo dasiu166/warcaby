@@ -60,7 +60,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	//BEGIN###INNE
 	private int numbClick; //liczy klikniecia w plansze
-	private boolean site; //strona ktora moze sie przesunac - zaczyna dol
+	private boolean site=true; //strona ktora moze sie przesunac - zaczyna dol
 	private Point point1st; //wsp pierwszego klikniecia
 	private Point point2nd; //wsp drugiego klikniecia
 	
@@ -69,6 +69,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	private LinkedList<int[]> moveList;//lista ruchow dla danej strony
 	
 	private PlayersPanel plP; //panel wyswietlajacy liczbe pionkow
+	private GameInfo gInf;
 	//END###---INNE
 	
 	@Override
@@ -202,6 +203,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		//resetuje plansze
 		boardLog.makeBoard();
 		site=s;
+		plP.setSite(site);
 		repaint();
 	}
 	
@@ -223,8 +225,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		
 			
 		boardLog.doMove(dest, boardLog.getPossStart());
-		
-		boardLog.backMove(site);
+		System.out.println("\n Cofam z  ----- "+dest[0]+dest[1]+" na "+boardLog.getPossStart()[0]+boardLog.getPossStart()[1]);
+		boardLog.backMove(!site);
 		site=!site; //cofniecie zmiany stron
 		
 		plP.setSite(site);
@@ -237,6 +239,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	public void setPlP(PlayersPanel p){
 		plP=p;
 		plP.setSite(site);//wskazanie na panelu czyja kolej
+	}
+	public void setGinfo(GameInfo g){
+		gInf=g;
 	}
 	
 	
@@ -252,6 +257,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		if (numbClick==0){
 			tmpBoard=boardLog;
 			moveList=boardLog.PawnsToMoveList(site);
+			
+
+			
 			
 		}
 		
@@ -283,7 +291,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				JOptionPane.showMessageDialog(null, "Tym pionkiem nie ma ruchu");
 				numbClick=0;
 			}
-			
+			gInf.setMoves(moveList);//wpisanie listy ruchow na zakladke
 			repaint();
 		}
 		
@@ -364,9 +372,11 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 
 					}
 				//sprawdzanie wygranej
-			if(boardLog.checkGameStatus()){
-				JOptionPane.showMessageDialog(null, "Wygrales");
-			}
+				moveList=boardLog.PawnsToMoveList(site);
+				//gInf.setMoves(moveList);//wpisanie listy ruchow na zakladke
+				if(boardLog.checkGameStatus(moveList)){
+					JOptionPane.showMessageDialog(null, "Wygrales");
+				}
 				
 			} else {
 				JOptionPane.showMessageDialog(null, "Na to pole nie ma ruchu");
