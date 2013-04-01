@@ -93,14 +93,21 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
         g2d.setColor(Color.DARK_GRAY);
         g2d.fill(new Rectangle(XSHIFT-BORDER1-BORDER2,YSHIFT-BORDER1-BORDER2,500,500));
         g2d.setColor(Color.BLACK);
+        
         g2d.fill(new Rectangle(XSHIFT-BORDER1,YSHIFT-BORDER1,450,450));
         g2d.setColor(Color.GRAY);
         g2d.fill(new Rectangle(XSHIFT-BORDER3,YSHIFT-BORDER3,410,410));
         
-        
-       for (int r=0;r<8;r++){
-    	   for (int c=0;c<8;c++){
-    		   
+        int r=0;
+        int c=0;
+       for (r=0;r<8;r++){
+    	   for (c=0;c<8;c++){
+    		  
+    		   g2d.setColor(Color.white);
+    		   g2d.drawString(Integer.toString(r+1), XSHIFT-BORDER1+5, YSHIFT+25+(r*GF_SIZE) );
+    		   g2d.drawString(Integer.toString(c+1), XSHIFT+25+(c*GF_SIZE), YSHIFT-BORDER1+15 );
+
+
     		   
     		   if (boardLog.getField(r, c) instanceof BlackField) {
     			   //czarne pola

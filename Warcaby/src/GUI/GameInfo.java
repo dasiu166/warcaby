@@ -67,10 +67,10 @@ public class GameInfo extends JPanel implements ActionListener {
 			
 			if((tab[0]!=tmp[0])||(tab[1]!=tmp[1])){
 				tmp=tab;
-				text+="<br> Pionek <b>"+tab[0]+" &nbsp "+tab[1]+"</b> ### ";
-				text+="&nbsp ->> Cel <b>"+tab[2]+" &nbsp "+tab[3]+"</b> ";
+				text+="<br> Pionek <b>"+(tab[0]+1)+" &nbsp "+(tab[1]+1)+"</b> ### ";
+				text+="&nbsp ->> Cel <b>"+(tab[2]+1)+" &nbsp "+(tab[3]+1)+"</b> ";
 			} else {
-				text+="&nbsp ->> Cel <b>"+tab[2]+" &nbsp "+tab[3]+"</b> ";
+				text+="&nbsp ->> Cel <b>"+(tab[2]+1)+" &nbsp "+(tab[3]+1)+"</b> ";
 			}
 			
 			}
