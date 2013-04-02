@@ -41,9 +41,15 @@ public class GameOptions extends JFrame implements ActionListener {
 	private JComboBox JCBStrona;
 	private String[] opcje = {"Czerwone", "Niebieskie"};
 	
+	private JLabel JLGameMode;
+	private JComboBox JCBGameMode;
+	private String[] gameMode = {"PvP", "PvE"};
+
+	
 	private JPanel panel = new JPanel();
 	private JPanel panelButtons = new JPanel();
-	private JPanel panelOptions = new JPanel();
+	private JPanel panelSite = new JPanel();
+	private JPanel panelGameMode = new JPanel();
 	
 	
 	
@@ -62,13 +68,25 @@ public class GameOptions extends JFrame implements ActionListener {
 		JLStrona = new JLabel("Strona");
 		
 		
-		panelOptions.setLayout(new BorderLayout(0,0));
-		panelOptions.setMaximumSize(new Dimension(350,200));
-		panelOptions.add(JLStrona, BorderLayout.WEST);
+		panelSite.setLayout(new BorderLayout(0,0));
+		panelSite.setMaximumSize(new Dimension(350,200));
+		panelSite.add(JLStrona, BorderLayout.WEST);
         //panelOptions.add(Box.createRigidArea(new Dimension(0, 0)));
-        panelOptions.add(JCBStrona);
+        panelSite.add(JCBStrona);
        // panelOptions.add(Box.createRigidArea(new Dimension(0, 0)));
-        panel.add(panelOptions);
+        
+        JCBGameMode = new JComboBox(gameMode);
+		JCBGameMode.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		JCBGameMode.setVisible(true);
+		JLGameMode = new JLabel("Typ gry");
+		
+		panelGameMode.setLayout(new BorderLayout(0,0));
+		panelGameMode.setMaximumSize(new Dimension(350,200));
+		panelGameMode.add(JLGameMode, BorderLayout.WEST);
+		panelGameMode.add(JCBGameMode);
+        
+        panel.add(panelSite);
+        panel.add(panelGameMode);
         //panel.add(Box.createRigidArea(new Dimension(0, 0)));
 
        // panel.add(Box.createVerticalGlue());
@@ -93,7 +111,7 @@ public class GameOptions extends JFrame implements ActionListener {
         this.pack();
         this.setTitle("Narazie brzydkie ale bedzie ladne;)");
 		this.setSize(400, 150);
-		this.setResizable(false);
+		this.setResizable(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
@@ -113,14 +131,28 @@ public class GameOptions extends JFrame implements ActionListener {
 				JLStrona = new JLabel("Strona");
 				
 				
-				panelOptions.setLayout(new BorderLayout(0,0));
-				panelOptions.setMaximumSize(new Dimension(350,200));
-				panelOptions.add(JLStrona, BorderLayout.WEST);
+				panelSite.setLayout(new BorderLayout(0,0));
+				panelSite.setMaximumSize(new Dimension(350,200));
+				panelSite.add(JLStrona, BorderLayout.WEST);
 		        //panelOptions.add(Box.createRigidArea(new Dimension(0, 0)));
-		        panelOptions.add(JCBStrona);
+		        panelSite.add(JCBStrona);
 		       // panelOptions.add(Box.createRigidArea(new Dimension(0, 0)));
-		        panel.add(panelOptions);
+		        
+		        JCBGameMode = new JComboBox(gameMode);
+				JCBGameMode.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+				JCBGameMode.setVisible(true);
+				JLGameMode = new JLabel("Typ gry");
+				
+				panelGameMode.setLayout(new BorderLayout(0,0));
+				panelGameMode.setMaximumSize(new Dimension(350,200));
+				panelGameMode.add(JLGameMode, BorderLayout.WEST);
+				panelGameMode.add(JCBGameMode);
+				
+		        panel.add(panelSite);
+		        panel.add(panelGameMode);
 		        //panel.add(Box.createRigidArea(new Dimension(0, 0)));
+		        
+		        
 
 		       // panel.add(Box.createVerticalGlue());
 				//BUTTONS
@@ -141,9 +173,9 @@ public class GameOptions extends JFrame implements ActionListener {
 		        panel.add(panelButtons);
 		        panel.add(Box.createRigidArea(new Dimension(0, 15)));
 				
-		        this.pack();
+		        //this.pack();
 		        this.setTitle("Narazie brzydkie ale bedzie ladne;)");
-				this.setSize(400, 150);
+				this.setSize(400, 200);
 				this.setResizable(false);
 		        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		        this.setLocationRelativeTo(gw);
@@ -159,13 +191,18 @@ public class GameOptions extends JFrame implements ActionListener {
 			this.dispose();
 			return;
 		}
+		
+		boolean site,ai;
+		
+		
 		if(JCBStrona.getSelectedItem().equals(opcje[0])){
-				gw.setEnabled(true); //odblokowanie okna
-				gw.startGame(true);
-			} else {
-				gw.setEnabled(true); //odblokowanie okna
-				gw.startGame(false);
-			}
+				site=true; } else { site=false; }
+		if(JCBGameMode.getSelectedItem().equals(gameMode[0])){
+			ai=false; } else { ai=true; }
+		
+		
+		gw.setEnabled(true); //odblokowanie okna
+		gw.startGame(site,ai);
 		this.dispose();
 	}
 	

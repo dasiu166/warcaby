@@ -142,9 +142,10 @@ public class GameWindow extends JFrame implements ActionListener{
 		
 	}
 	
-	public void startGame(boolean strona){
+	public void startGame(boolean strona, boolean ai){
 		Gboard.setVisible(true);
 		Gboard.resetGUIBoard(strona);
+		Gboard.setAi(ai);
 	}
 	
 	public void actionPerformed(ActionEvent e){

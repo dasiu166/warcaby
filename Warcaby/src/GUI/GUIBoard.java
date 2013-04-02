@@ -30,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 import checkers.Pawn;
 
+import ai.RandomMove;
 import board.BlackField;
 import board.Board;
 
@@ -62,6 +63,10 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	//BEGIN###INNE
 	private int numbClick; //liczy klikniecia w plansze
 	private boolean site=true; //strona ktora moze sie przesunac - zaczyna dol
+	
+	private boolean ai=true;//true = gra z komputerem
+	private boolean aiPermision=false;//pozwolenie na ruch z komputerem
+	
 	private Point point1st; //wsp pierwszego klikniecia
 	private Point point2nd; //wsp drugiego klikniecia
 	
@@ -215,6 +220,10 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		repaint();
 	}
 	
+	public void setAi(boolean val){
+		ai=val;
+	}
+	
 	public void testGUIBoard(){
 		//resetuje plansze
 		boardLog.makeTestBoard1();
@@ -262,13 +271,12 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {	
 		
+		
+		
 		if (numbClick==0){
+			
 			tmpBoard=boardLog;
 			moveList=boardLog.PawnsToMoveList(site);
-			
-
-			
-			
 		}
 		
 		
@@ -322,7 +330,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 							int[] t = i.next();
 							if((t[0]==dest[0])&&(t[1]==dest[1])){
 								numbClick=1;
+								
 								target=dest;
+								aiPermision=false;
 								return;	
 							}
 						}
@@ -360,6 +370,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 						
 						if(site)site=false;else site=true;//zamiana stron
 						numbClick=0;//zerowanie klikniec
+						
+						aiPermision=true;//ruch komputra
+						
 						//(down) sprawdz czy pionke moze stac sie damka
 						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
 					
@@ -374,6 +387,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 					//jezeli zwykle przesuniecie to zmien strony i wyzeruj klikniecia
 					if(site)site=false;else site=true;
 					numbClick=0;
+					aiPermision=true;//pozwolenie dla komputera
 					plP.setSite(site);//wskazanie na panelu czyja kolej
 					//(down) sprawdz czy pionke moze stac sie damka
 					((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
@@ -393,6 +407,49 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			
 		}
+		
+		//-------------------------------------AI
+		if ((ai)){
+			
+			if(aiPermision){
+				
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+			RandomMove rm = new RandomMove();
+			moveList=boardLog.PawnsToMoveList(site);
+			int[] tt=rm.getRandomMove(moveList);
+			System.out.println("LOSOWY RUCH------- "+tt[0]+" "+tt[1]+" NA "+tt[2]+" "+tt[3]);
+			
+			int[] t = {tt[0],tt[1]};
+			int[] d = {tt[2],tt[3]};
+			
+			
+				boardLog.doMove(t, d, site);
+				if ((moveList.getFirst()[0]!=-1)){
+					while(1==1){
+						if ((moveList.isEmpty())||(moveList.getFirst()[0]==-1)) break;
+						moveList=boardLog.PawnsToMoveList(site);
+						tt=rm.getRandomMove(moveList);
+						//t[0]=tt[0]; t[1]=tt[1];
+						t=d;//zamiana celu z targetem
+						d[0] = tt[2];d[1]=tt[3];
+						boardLog.doMove(t, d, site);
+						repaint();
+					}
+				}
+				site=!site;
+				aiPermision=false;
+				repaint();
+			}
+		}
+		
+		
 		
 		
 	}
