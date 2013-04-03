@@ -7,10 +7,15 @@ public class RandomMove {
 	
 	public int[] getRandomMove(LinkedList<int[]> moveL){
 		//Zwraca null gdy brak ruchow, inaczej losowy ruch
-		int[] t = {-1,-1,-1,-1};
-		if(moveL.isEmpty()) {
+		
+		
+		if((moveL.isEmpty())/*||((moveL.size()==1)&&(moveL.getFirst()[0]!=-1))*/) {
 			return null;
 			}
+		
+		if((moveL.size()==2)&&(moveL.getFirst()[0]==-1)){
+			return moveL.get(1);
+		}
 		
 		int[] tab = moveL.getFirst();
 		

@@ -30,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 import checkers.Pawn;
 
+import ai.AiEngine;
 import ai.RandomMove;
 import board.BlackField;
 import board.Board;
@@ -66,6 +67,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	private boolean ai=true;//true = gra z komputerem
 	private boolean aiPermision=false;//pozwolenie na ruch z komputerem
+	private AiEngine engine;
+	private boolean firstClick=true;
 	
 	private Point point1st; //wsp pierwszego klikniecia
 	private Point point2nd; //wsp drugiego klikniecia
@@ -210,6 +213,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		this.addMouseListener(this);
 		boardLog.makeBoard();
 		tmpBoard=boardLog;
+		engine = new AiEngine(boardLog,!site);
 	}
 	
 	public void resetGUIBoard(boolean s){
@@ -273,7 +277,19 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		
 		
 		
+		
 		if (numbClick==0){
+			
+			if((ai)){
+				System.out.println("AI-------");
+				if((engine.permisionToClick())&& (engine.isAbort())){
+				System.out.println("AI-------WYLACZONE");
+				site=engine.getSite();
+				//engine.abort();
+				}else {
+					System.out.println("AI-------WLACZONE");
+					return;}
+			} 
 			
 			tmpBoard=boardLog;
 			moveList=boardLog.PawnsToMoveList(site);
@@ -306,9 +322,11 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			if(!is){
 				JOptionPane.showMessageDialog(null, "Tym pionkiem nie ma ruchu");
 				numbClick=0;
+				aiPermision=false;
 			}
 			gInf.setMoves(moveList);//wpisanie listy ruchow na zakladke
 			repaint();
+			aiPermision=false;
 		}
 		
 		
@@ -349,6 +367,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				int[] t = i.next();
 				if((t[2]==dest[0])&&(t[3]==dest[1])){
 					is=true;
+					break;
 				}
 			}
 			
@@ -377,7 +396,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
 					
 					} else {//jezeli jest wielobicie
-						
+						aiPermision=false;//ruch komputra
 						plP.setSite(site);//wskazanie na panelu czyja kolej (teraz znowu nasza)
 						target=dest; //uaktualnienie celu zeby nie klikac znowa na pionka ktorym bijemy
 						numbClick=1; //przejscie odrazu do drugiego klikniecia
@@ -403,23 +422,33 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			} else {
 				JOptionPane.showMessageDialog(null, "Na to pole nie ma ruchu");
 				numbClick=0;
+				aiPermision=false;//ruch komputra
 				}
+			
+			if(ai){
+				if (aiPermision){
+					
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException ee) {
+						// TODO Auto-generated catch block
+						ee.printStackTrace();
+					}
+					
+					engine.computate();
+					aiPermision=false;
+					plP.setSite(engine.getSite());//wskazanie na panelu czyja kolej
+					repaint();
+				}
+			}
 			
 			
 		}
 		
-		//-------------------------------------AI
-		if ((ai)){
+		
+		/*if ((ai)){
 			
 			if(aiPermision){
-				
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
 				
 			RandomMove rm = new RandomMove();
 			moveList=boardLog.PawnsToMoveList(site);
@@ -431,6 +460,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			
 				boardLog.doMove(t, d, site);
+				
 				if ((moveList.getFirst()[0]!=-1)){
 					while(1==1){
 						if ((moveList.isEmpty())||(moveList.getFirst()[0]==-1)) break;
@@ -447,7 +477,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				aiPermision=false;
 				repaint();
 			}
-		}
+		}*/
 		
 		
 		
