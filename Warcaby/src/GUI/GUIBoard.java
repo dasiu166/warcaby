@@ -299,7 +299,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		numbClick++;
 		
 		if(numbClick==1){
-			
+			//moveList=boardLog.PawnsToMoveList(site);
 			boolean is=false;
 			point1st=e.getPoint();
 			target=CheckAndsetLightField(point1st);
@@ -385,15 +385,20 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				moveList=boardLog.PawnsToMoveList(site);//pobranie kolejnych mozliwych ruchow dla nas
 								
 					//jezeli lista ruchow pusta lub sa na niej tylko pojedyncze to znaczy ze koniec wielobicia
-					if(moveList.isEmpty()||(moveList.getFirst()[0]==-1)){
+					if(moveList.isEmpty()||(moveList.getFirst()[0]==-1)||
+							(!boardLog.isTargetOnList(moveList, dest))){
+						//up poprawia bug wielobicia
 						
-						if(site)site=false;else site=true;//zamiana stron
+						
+						//if(site)site=false;else site=true;//zamiana stron
+						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+
+						site=!site;
 						numbClick=0;//zerowanie klikniec
 						
 						aiPermision=true;//ruch komputra
 						
 						//(down) sprawdz czy pionke moze stac sie damka
-						((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
 					
 					} else {//jezeli jest wielobicie
 						aiPermision=false;//ruch komputra
@@ -404,12 +409,14 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 					} 
 				} else {
 					//jezeli zwykle przesuniecie to zmien strony i wyzeruj klikniecia
-					if(site)site=false;else site=true;
+					//if(site)site=false;else site=true;
+					((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+
+					site=!site;
 					numbClick=0;
 					aiPermision=true;//pozwolenie dla komputera
 					plP.setSite(site);//wskazanie na panelu czyja kolej
 					//(down) sprawdz czy pionke moze stac sie damka
-					((BlackField)boardLog.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
 
 					}
 				//sprawdzanie wygranej
@@ -426,14 +433,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				}
 			
 			if(ai){
-				if (aiPermision){
+				if ((aiPermision)&&(numbClick==0)){
 					
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException ee) {
-						// TODO Auto-generated catch block
-						ee.printStackTrace();
-					}
+					
 					
 					engine.computate();
 					aiPermision=false;
@@ -444,44 +446,6 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			
 		}
-		
-		
-		/*if ((ai)){
-			
-			if(aiPermision){
-				
-			RandomMove rm = new RandomMove();
-			moveList=boardLog.PawnsToMoveList(site);
-			int[] tt=rm.getRandomMove(moveList);
-			System.out.println("LOSOWY RUCH------- "+tt[0]+" "+tt[1]+" NA "+tt[2]+" "+tt[3]);
-			
-			int[] t = {tt[0],tt[1]};
-			int[] d = {tt[2],tt[3]};
-			
-			
-				boardLog.doMove(t, d, site);
-				
-				if ((moveList.getFirst()[0]!=-1)){
-					while(1==1){
-						if ((moveList.isEmpty())||(moveList.getFirst()[0]==-1)) break;
-						moveList=boardLog.PawnsToMoveList(site);
-						tt=rm.getRandomMove(moveList);
-						//t[0]=tt[0]; t[1]=tt[1];
-						t=d;//zamiana celu z targetem
-						d[0] = tt[2];d[1]=tt[3];
-						boardLog.doMove(t, d, site);
-						repaint();
-					}
-				}
-				site=!site;
-				aiPermision=false;
-				repaint();
-			}
-		}*/
-		
-		
-		
-		
 	}
 
 

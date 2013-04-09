@@ -81,23 +81,23 @@ public class Board {
 			}
 		}
 
-		/*
-		 * ((BlackField) board[6][1]).addPawn(new Pawn(r, c,false));
-		 * ((BlackField) board[5][2]).addPawn(new Pawn(r, c,false));
-		 * ((BlackField) board[6][5]).addPawn(new Pawn(r, c,false));
-		 * 
-		 * ((BlackField) board[1][0]).addPawn(new Pawn(r, c,true));
-		 * ((BlackField) board[1][2]).addPawn(new Pawn(r, c,true));
-		 * ((BlackField) board[1][4]).addPawn(new Pawn(r, c,true));
-		 */
+		
+		  ((BlackField) board[6][1]).addPawn(new Pawn(6, 1,false));
+		  ((BlackField) board[5][2]).addPawn(new Pawn(5, 2,false));
+		  ((BlackField) board[6][5]).addPawn(new Pawn(6, 5,false));
+		  
+		 ((BlackField) board[1][0]).addPawn(new Pawn(1, 0,true));
+		  //((BlackField) board[1][2]).addPawn(new Pawn(1, 2,true));
+		  ((BlackField) board[1][4]).addPawn(new Pawn(1, 4,true));
+		 
 
-		Pawn p1 = new Pawn(r, c, false);
+		Pawn p1 = new Pawn(1, 2, false);
 		((BlackField) board[1][2]).addPawn(p1);
 		//((BlackField) board[2][5]).addPawn(p1);
 		//((BlackField) board[4][3]).addPawn(p1);
 		//((BlackField) board[5][6]).addPawn(p1);
 		//((BlackField) board[4][5]).addPawn(p1);
-		Pawn p2 = new Pawn(r, c, true);
+		Pawn p2 = new Pawn(3, 4, true);
 		p2.setKing();
 		((BlackField) board[3][4]).addPawn(p2);
 
@@ -295,7 +295,7 @@ public class Board {
 					int[] target = { r, c };
 
 					if (bF.havePawn()) {// damki
-						if (bF.getPawn().isKing()) {
+						if ((bF.getPawn().isKing())) {
 							this.checkKingBeat(target, lista, s);
 							continue;
 						}
@@ -369,7 +369,7 @@ public class Board {
 								v[0] = target[0];
 								v[1] = target[1];
 								// przod lewo
-								System.out.println("przod lewo");
+								//System.out.println("przod lewo");
 								while (1 == 1) {
 									v[0]--;
 									v[1]--;
@@ -389,7 +389,7 @@ public class Board {
 								v[0] = target[0];
 								v[1] = target[1];
 								// tyl lewo
-								System.out.println("tyl lewo");
+								//System.out.println("tyl lewo");
 								while (1 == 1) {
 									v[0]++;
 									v[1]--;
@@ -410,7 +410,7 @@ public class Board {
 								v[0] = target[0];
 								v[1] = target[1];
 								// tyl prawo
-								System.out.println("tyl prawo");
+								//System.out.println("tyl prawo");
 								while (1 == 1) {
 									v[0]++;
 									v[1]++;
@@ -463,13 +463,13 @@ public class Board {
 		}
 
 		// wypis dla testow
-		Iterator<int[]> i = lista.iterator();
+		/*Iterator<int[]> i = lista.iterator();
 		while (i.hasNext()) {
 			int[] t = i.next();
 			System.out.println("Pionek R=" + t[0] + "  C=" + t[1] + " NA POLE "
 					+ t[2] + " " + t[3]);
 		}
-		System.out.println("--------------------------------");
+		System.out.println("--------------------------------");*/
 		return lista;
 	}
 
@@ -502,7 +502,7 @@ public class Board {
 				 * Moze poruszac sie o dowolna ilosc pol, ale tylko po skosie
 				 * nie moze przeskakiwac swoich pionkow
 				 */
-				System.out.println("DAMKA DAMKA DAMKA");
+				//System.out.println("DAMKA DAMKA DAMKA");
 				int rVal = tar[0] - dest[0]; // roznica wierszy celu i
 												// rzeznczenia
 				int cVal = tar[1] - dest[1]; // roznica kolumn celu i
@@ -577,22 +577,35 @@ public class Board {
 		int r = tar[0];
 		int c = tar[1];
 		int wb = 0;// wykryto bicie
+		Pawn tmp = ((BlackField) board[r][c]).getPawn();
+		
+		if(tmp.getSide()!=s) return;
 		// przod lewo
+		
+		
 		while (1 == 1) {
 			r--;
 			c--;
 			if ((r < 0) || (c < 0))
 				break;
 			Pawn tmpP = ((BlackField) board[r][c]).getPawn();
+			
+			if(wb==-1) break;
+			
 			if (wb == 0) {// przed wykryciem bicia
-				if (tmpP == null)
-					continue;
-				else if (tmpP.getSide() == s)
-					break;
-				else if (tmpP.getSide() != s) {
+				if (tmpP == null) continue;
+				
+				if (tmpP.getSide() != s) {
 					wb = 1;
 					continue;
 				}
+				
+				if (tmpP.getSide() == s) {
+					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					break;
+					}
+				
+				
 			}
 			if (wb == 1) {// po wykryciu bicia
 				if (tmpP == null) {
@@ -616,9 +629,12 @@ public class Board {
 			if (wb == 0) {// przed wykryciem bicia
 				if (tmpP == null)
 					continue;
-				else if (tmpP.getSide() == s)
+				if (tmpP.getSide() == s)
+				{
+					System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
-				else if (tmpP.getSide() != s) {
+					}
+				if (tmpP.getSide() != s) {
 					wb = 1;
 					continue;
 				}
@@ -644,9 +660,12 @@ public class Board {
 			if (wb == 0) {// przed wykryciem bicia
 				if (tmpP == null)
 					continue;
-				else if (tmpP.getSide() == s)
+				if (tmpP.getSide() == s)
+				{
+					System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
-				else if (tmpP.getSide() != s) {
+					}
+				if (tmpP.getSide() != s) {
 					wb = 1;
 					continue;
 				}
@@ -673,12 +692,17 @@ public class Board {
 			if (wb == 0) {// przed wykryciem bicia
 				if (tmpP == null)
 					continue;
-				else if (tmpP.getSide() == s)
-					break;
-				else if (tmpP.getSide() != s) {
+				if (tmpP.getSide() != s) {
 					wb = 1;
 					continue;
 				}
+				
+				if (tmpP.getSide() == s)
+				{
+					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					break;
+					}
+				
 			}
 			if (wb == 1) {// po wykryciu bicia
 				if (tmpP == null) {
@@ -838,6 +862,27 @@ public class Board {
 			}
 		}
 
+		return false;
+	}
+	
+	public void deleteTarget(LinkedList<int[]> moveL, int[] tab){
+		Iterator<int[]> i = moveL.iterator();
+		while(i.hasNext()){
+			int[] t = i.next();
+			if((t[0]==tab[0])&&(t[1]==tab[1])){
+				i.remove();
+			}
+		}
+	}
+	
+	public boolean isTargetOnList(LinkedList<int[]> moveL, int[] tab){
+		Iterator<int[]> i = moveL.iterator();
+		while(i.hasNext()){
+			int[] t = i.next();
+			if((t[0]==tab[0])&&(t[1]==tab[1])){
+				return true;
+			}
+		}
 		return false;
 	}
 	

@@ -41,7 +41,6 @@ public class AiEngine {
 	
 	public void computate(){
 		
-		
 		System.out.println("procedura wystartowala");
 		perToClick=false;
 		run=true;
@@ -50,12 +49,9 @@ public class AiEngine {
 		
 		while(run){
 		tmpL=board.PawnsToMoveList(site);
-		
-		if((wasBeat)&&(tmpL.getFirst()[0]==-1)){
-			perToClick=true;//pozwol na klikniecia
-			run=false;
-			return;
-		}
+		ruch = rm.getRandomMove(tmpL); //losowy ruch
+		int[] tar = {ruch[0],ruch[1]};
+		int[] dest = {ruch[2],ruch[3]};
 		
 		if(tmpL.isEmpty()){ //jezeli lista pusta
 			//site=!site; //zmiana stron
@@ -64,30 +60,43 @@ public class AiEngine {
 			return;
 		}
 		
-		ruch = rm.getRandomMove(tmpL); //losowy ruch
-		int[] tar = {ruch[0],ruch[1]};
-		int[] dest = {ruch[2],ruch[3]};
+		if((wasBeat)&&(tmpL.getFirst()[0]==-1)){
+			perToClick=true;//pozwol na klikniecia
+			run=false;
+			return;
+		}
 		
-		
-		board.doMove(tar, dest, site);
 		
 		if(tmpL.getFirst()[0]==-1) { //wyjdz z petli po zwyklym przesunieciu
 			//site=!site;
+			
+			board.doMove(tar, dest, site);
 			perToClick=true;
 			run=false;
+			((BlackField)board.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+
 			return;
-		} else {wasBeat=true;}
+		} else {
+			
+			board.doMove(tar, dest, site);
+			wasBeat=true;
+			((BlackField)board.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+
+		}
 		
 			
 		}
-		((BlackField)board.getField(ruch[2], ruch[3])).getPawn().checkAndSetKing(ruch[2]);
 
 		if(board.checkGameStatus(tmpL)){
 			JOptionPane.showMessageDialog(null, "Wygrales");
 		}
 		
 		System.out.println("procedura zakonczona");
+		long tval = System.currentTimeMillis();
 		
+		while(true){
+			if(System.currentTimeMillis()-tval>=1000) break;
+		}
 		
 	}
 	

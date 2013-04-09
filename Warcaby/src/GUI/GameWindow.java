@@ -48,6 +48,9 @@ public class GameWindow extends JFrame implements ActionListener{
 	private GameOptions Goptions;
 	private GameInfo Ginfo;
 	
+	private boolean ResetStrona;
+	private boolean ResetAi;
+	
 	
 	public GameWindow(){		
 
@@ -143,9 +146,12 @@ public class GameWindow extends JFrame implements ActionListener{
 	}
 	
 	public void startGame(boolean strona, boolean ai){
+		
 		Gboard.setVisible(true);
 		Gboard.resetGUIBoard(strona);
 		Gboard.setAi(ai);
+		ResetStrona=strona;
+		ResetAi=ai;
 	}
 	
 	public void actionPerformed(ActionEvent e){
@@ -160,7 +166,8 @@ public class GameWindow extends JFrame implements ActionListener{
 		
 		if (e.getSource() == JMIReset){
 			JOptionPane.showMessageDialog(null, "Reset");
-			Gboard.resetGUIBoard(true);
+			Gboard.resetGUIBoard(ResetStrona);
+			Gboard.setAi(ResetAi);
 		}
 		
 		if (e.getSource() == JMIWyjdz){
