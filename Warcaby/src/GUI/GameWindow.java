@@ -1,5 +1,7 @@
 package GUI;
 
+import help.HelpWindow;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -9,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -83,7 +86,7 @@ public class GameWindow extends JFrame implements ActionListener{
 		
 		JMPomoc = new JMenu("Pomoc"); //Pasek menu - Pomoc
 		JMIInfo = new JMenuItem("O programie"); //Pasek menu - Pomoc - O programie
-		
+		JMIInfo.addActionListener(this);
 		this.setJMenuBar(pasekMenu);
 		pasekMenu.setVisible(true);
 		
@@ -177,6 +180,7 @@ public class GameWindow extends JFrame implements ActionListener{
 		
 		if (e.getSource() == JMITest){
 			Gboard.testGUIBoard();
+			Gboard.setAi(true);
 		}
 		
 		//-------------------------------------------
@@ -188,6 +192,12 @@ public class GameWindow extends JFrame implements ActionListener{
 		if (e.getSource() == JMIGameInfo){
 			if(Ginfo.isVisible())
 			Ginfo.setVisible(false); else Ginfo.setVisible(true);
+		}
+		//------------------------------------------
+		if (e.getSource() == JMIInfo){
+			URL index = ClassLoader.getSystemResource("HelpHtml/index.html");
+		    //URL index  = ClassLoader.class.getResource("Help/index.html");
+		    new HelpWindow("Warcaby", index);
 		}
 	}
 	

@@ -68,6 +68,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	private boolean ai=true;//true = gra z komputerem
 	private boolean aiPermision=false;//pozwolenie na ruch z komputerem
 	private AiEngine engine;
+	private int[] aiDest;
 	private boolean firstClick=true;
 	
 	private Point point1st; //wsp pierwszego klikniecia
@@ -245,9 +246,17 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		}
 		
 			
+		boardLog.backMove(!site);
+		if(ai) {
+			if(aiDest==null) System.out.println("aiDest to null");
+			if(boardLog.getAiPossStart()==null) System.out.println("startAiPoss to null");
+			System.out.println("\n CofamAI z  ----- "+aiDest[0]+aiDest[1]+" na "+boardLog.getAiPossStart()[0]+boardLog.getAiPossStart()[1]);
+
+			boardLog.doMove(aiDest, boardLog.getAiPossStart());
+			}
 		boardLog.doMove(dest, boardLog.getPossStart());
 		System.out.println("\n Cofam z  ----- "+dest[0]+dest[1]+" na "+boardLog.getPossStart()[0]+boardLog.getPossStart()[1]);
-		boardLog.backMove(!site);
+		
 		site=!site; //cofniecie zmiany stron
 		
 		plP.setSite(site);
@@ -255,6 +264,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
 		boardLog.clearPawnsToRemoveList();
 		boardLog.setPossStart(null);
+		boardLog.setAiPossStart(null);
 		repaint();
 	}
 	public void setPlP(PlayersPanel p){
@@ -281,13 +291,13 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 		if (numbClick==0){
 			
 			if((ai)){
-				System.out.println("AI-------");
+				//System.out.println("AI-------");
 				if((engine.permisionToClick())&& (engine.isAbort())){
-				System.out.println("AI-------WYLACZONE");
+				//System.out.println("AI-------WYLACZONE");
 				site=engine.getSite();
 				//engine.abort();
 				}else {
-					System.out.println("AI-------WLACZONE");
+					//System.out.println("AI-------WLACZONE");
 					return;}
 			} 
 			
@@ -374,7 +384,7 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			if(is){ //jezeli przeznaczenie jest na liscie
 		
-				boardLog.doMove(target, dest,site); //!!!TU uruchamaia sie caly mechaniz warcab
+				boardLog.doMove(target, dest,true); //!!!TU uruchamaia sie caly mechaniz warcab
 				
 				
 				plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
@@ -434,12 +444,12 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			
 			if(ai){
 				if ((aiPermision)&&(numbClick==0)){
-					
-					
-					
 					engine.computate();
+					aiDest=engine.getComputateDest();
 					aiPermision=false;
 					plP.setSite(engine.getSite());//wskazanie na panelu czyja kolej
+					plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
+					plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
 					repaint();
 				}
 			}

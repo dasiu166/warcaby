@@ -18,7 +18,9 @@ public class Board {
 	private int colChkField = -1;// kolumna zaznaczonego pionka
 	
 	private LinkedList<int[]> pawnsToRemove = new LinkedList<int[]>(); //pionki oznaczone jako do usuniecia bo biciu (potrzebne do cofniecia ruchu)
+	private LinkedList<int[]> pawnsAiToRemove = new LinkedList<int[]>();//pionki oznaczone jako do usuniecia po bicu komputera
 	private int[] possStart = {-1,-1}; //pozycja pionka przed biciem
+	private int[] possAiStart = {-1,-1};
 	
 	public void setPossStart(int[] t){
 		possStart=t;
@@ -26,8 +28,15 @@ public class Board {
 	public int[] getPossStart(){
 		return possStart;
 	}
+	public void setAiPossStart(int[] t){
+		possAiStart=t;
+	}
+	public int[] getAiPossStart(){
+		return possAiStart;
+	}
 	public void clearPawnsToRemoveList(){
 		pawnsToRemove.clear();
+		pawnsAiToRemove.clear();
 	}
 	
 	public void setRowChkF(int r) {
@@ -86,9 +95,9 @@ public class Board {
 		  ((BlackField) board[5][2]).addPawn(new Pawn(5, 2,false));
 		  ((BlackField) board[6][5]).addPawn(new Pawn(6, 5,false));
 		  
-		 ((BlackField) board[1][0]).addPawn(new Pawn(1, 0,true));
+		 //((BlackField) board[1][0]).addPawn(new Pawn(1, 0,true));
 		  //((BlackField) board[1][2]).addPawn(new Pawn(1, 2,true));
-		  ((BlackField) board[1][4]).addPawn(new Pawn(1, 4,true));
+		 // ((BlackField) board[1][4]).addPawn(new Pawn(1, 4,true));
 		 
 
 		Pawn p1 = new Pawn(1, 2, false);
@@ -196,7 +205,8 @@ public class Board {
 						c--;
 						if(((BlackField) board[r][c]).havePawn()){
 							int[] t = {r,c};
-							pawnsToRemove.add(t);
+							if(s)pawnsToRemove.add(t);
+							else pawnsAiToRemove.add(t);
 						}
 						((BlackField) board[r][c]).removePawn();
 						//System.out.println("Do zbicia "+r+"  "+c);
@@ -211,7 +221,8 @@ public class Board {
 						c++;
 						if(((BlackField) board[r][c]).havePawn()){
 							int[] t = {r,c};
-							pawnsToRemove.add(t);
+							if(s)pawnsToRemove.add(t);
+							else pawnsAiToRemove.add(t);
 						}
 						((BlackField) board[r][c]).removePawn();
 				}
@@ -225,7 +236,8 @@ public class Board {
 						c--;
 						if(((BlackField) board[r][c]).havePawn()){
 							int[] t = {r,c};
-							pawnsToRemove.add(t);
+							if(s)pawnsToRemove.add(t);
+							else pawnsAiToRemove.add(t);
 						}
 						((BlackField) board[r][c]).removePawn();
 				}
@@ -239,7 +251,8 @@ public class Board {
 						c++;
 						if(((BlackField) board[r][c]).havePawn()){
 							int[] t = {r,c};
-							pawnsToRemove.add(t);
+							if(s)pawnsToRemove.add(t);
+							else pawnsAiToRemove.add(t);
 						}
 						((BlackField) board[r][c]).removePawn();
 				}
@@ -250,6 +263,17 @@ public class Board {
 	public void backMove(boolean s){
 		//if((possStart==null)||(possStart[0]==-1)||(possStart[1]==-1)) return;
 		if(pawnsToRemove==null) return;
+		
+		
+		if(!pawnsAiToRemove.isEmpty()){
+			Iterator<int[]> ii = pawnsAiToRemove.iterator();
+			while(ii.hasNext()){
+				int[] t = ii.next();
+				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(s));//zwroc odwrotny kolor
+			}
+			}
+		
+		
 		if(!pawnsToRemove.isEmpty()){
 		
 			Iterator<int[]> i = pawnsToRemove.iterator();
@@ -257,7 +281,10 @@ public class Board {
 				int[] t = i.next();
 				((BlackField)board[t[0]][t[1]]).addPawn(new Pawn(!s));//zwroc odwrotny kolor
 			}
-	}
+			
+		}
+		
+		
 	}
 
 	public int getLostPawnsNumb(boolean s) {
@@ -894,7 +921,7 @@ public class Board {
 		System.out.print("RED "+red+"  BLUE "+blue);
 		if(moveL.isEmpty()) return true;//jezeli brak ruchow
 		if((moveL.size()==1)&&(moveL.getFirst()[0]==-1)) return true;
-		//if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
+		if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
 		
 		return false;
 	}
