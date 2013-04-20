@@ -45,7 +45,7 @@ public class AiEngine {
 	
 	public void computate(){
 		
-		System.out.println("procedura wystartowala");
+		//System.out.println("procedura wystartowala");
 		perToClick=false;
 		run=true;
 		boolean wasBeat = false;
@@ -117,7 +117,7 @@ public class AiEngine {
 
 		
 		
-		System.out.println("procedura zakonczona");
+		//System.out.println("procedura zakonczona");
 		long tval = System.currentTimeMillis();
 		
 		while(true){

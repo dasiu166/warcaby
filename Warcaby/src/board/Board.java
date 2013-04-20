@@ -215,7 +215,7 @@ public class Board {
 			}
 			
 			if ((rR>0)&&(cR<0)){ //przod prawy
-				System.out.println("Do zbicia");
+				//System.out.println("Do zbicia");
 				int c = tar[1];
 				for(int r=tar[0]-1;r>dest[0];r--){
 						c++;
@@ -230,7 +230,7 @@ public class Board {
 			}
 			
 			if ((rR<0)&&(cR>0)){ //tyl prawy
-				System.out.println("Do zbicia");
+				//System.out.println("Do zbicia");
 				int c = tar[1];
 				for(int r=tar[0]+1;r<dest[0];r++){
 						c--;
@@ -245,7 +245,7 @@ public class Board {
 			}
 			
 			if ((rR<0)&&(cR<0)){// tyl prawy
-				System.out.println("Do zbicia");
+				//System.out.println("Do zbicia");
 				int c = tar[1];
 				for(int r=tar[0]+1;r<dest[0];r++){
 						c++;
@@ -918,7 +918,7 @@ public class Board {
 		
 		int red = this.getLostPawnsNumb(true);
 		int blue = this.getLostPawnsNumb(false);
-		System.out.print("RED "+red+"  BLUE "+blue);
+		//System.out.print("RED "+red+"  BLUE "+blue);
 		if(moveL.isEmpty()) return true;//jezeli brak ruchow
 		if((moveL.size()==1)&&(moveL.getFirst()[0]==-1)) return true;
 		if((red==12)||(blue==12)) return true; //wygrana jezeli braknie pionkow;
