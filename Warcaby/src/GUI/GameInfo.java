@@ -47,7 +47,7 @@ public class GameInfo extends JPanel implements ActionListener {
 		
 		//HISTORIA
 		hPanel = new JPanel();
-		JTPpanel.addTab("Historia", hPanel);
+		//JTPpanel.addTab("Historia", hPanel);
 		
 		this.add(JTPpanel);
 		

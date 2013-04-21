@@ -21,6 +21,7 @@ public class RandomMove {
 		
 		if (tab[0]<0){ //dla zwyklego ruchu
 			int index = (int)(1+ (Math.random()*(moveL.size()-1)));
+			if(moveL.size()==1) return null;
 			return moveL.get(index);
 		} else { //dla bic
 			int index = (int)((Math.random()*(moveL.size())));

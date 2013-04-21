@@ -10,6 +10,7 @@ public class KingAndBeatMove {
 	
 	LinkedList<int[]> kingMove = new LinkedList<int[]>();
 	LinkedList<int[]> beatMove = new LinkedList<int[]>();
+	LinkedList<int[]> normalMove = new LinkedList<int[]>();
 	RandomMove rm = new RandomMove();
 	
 	
@@ -74,8 +75,99 @@ public class KingAndBeatMove {
 		} else {
 			//return rm.getRandomMove(moveL);
 			Iterator<int[]> z = moveL.iterator();
-			if(moveL.getFirst()[0]==-1) return rm.getRandomMove(moveL); //jak brak bic zwroc losowy ruch
 			
+			//--------------ZWYKLY RUCH
+			if(moveL.getFirst()[0]==-1) { //operacje dla zwyklego ruchu
+				//return rm.getRandomMove(moveL); //jak brak bic zwroc losowy ruch
+				int index=0;
+				normalMove.clear();
+				Iterator<int[]> zr = moveL.iterator();
+				while(zr.hasNext()){
+					int[] w = zr.next();
+					if(w[0]==-1) continue;
+					normalMove.add(w);
+				}
+				
+				zr = moveL.iterator();
+				
+				while(zr.hasNext()){
+					int[] tab = zr.next();
+					if(tab[0]==-1) continue; //omin pierwszy wiersz zaznaczenia ze to zwykly ruch
+					
+					int[] tar = {tab[2],tab[3]};
+					
+					if((tab[2]-1>=0)&&(tab[3]-1>=0)&&(tab[2]+1<8)&&(tab[3]+1<8)){
+						//System.out.println("MOZNA SPRAWDZIC");
+					if(((BlackField)b.getField(tab[2]-1, tab[3]-1)).havePawn()){
+						if((((BlackField)b.getField(tab[2]-1, tab[3]-1)).getPawn().getSide()!=s)
+								&& ((!((BlackField)b.getField(tab[2]+1, tab[3]+1)).havePawn())||
+								((tab[0]==tab[2]+1)&&(tab[1]==tab[3]+1)))){
+							System.out.println("USUWAM");
+							normalMove.remove(tab);
+							//index++;
+							continue; //pomin ten ruch
+						}
+					}
+					}
+					
+					if((tab[2]-1>=0)&&(tab[3]-1>=0)&&(tab[2]+1<8)&&(tab[3]+1<8)){
+						//System.out.println("MOZNA SPRAWDZIC");
+					if(((BlackField)b.getField(tab[2]+1, tab[3]-1)).havePawn()){
+						if((((BlackField)b.getField(tab[2]+1, tab[3]-1)).getPawn().getSide()!=s)
+								&& ((!((BlackField)b.getField(tab[2]-1, tab[3]+1)).havePawn())||
+								((tab[0]==tab[2]-1)&&(tab[1]==tab[3]+1)))){
+							System.out.println("USUWAM");
+							normalMove.remove(tab);
+							//index++;
+							continue; //pomin ten ruch
+						}
+					}
+					}
+					if((tab[2]-1>=0)&&(tab[3]-1>=0)&&(tab[2]+1<8)&&(tab[3]+1<8)){
+						//System.out.println("MOZNA SPRAWDZIC");
+					if(((BlackField)b.getField(tab[2]-1, tab[3]+1)).havePawn()){
+						if((((BlackField)b.getField(tab[2]-1, tab[3]+1)).getPawn().getSide()!=s)
+								&& ((!((BlackField)b.getField(tab[2]+1, tab[3]-1)).havePawn())||
+										((tab[0]==tab[2]+1)&&(tab[1]==tab[3]-1)))){
+							System.out.println("USUWAM");
+							normalMove.remove(tab);
+							//index++;
+							continue; //pomin ten ruch
+						}
+					}
+					}
+					
+					if((tab[2]-1>=0)&&(tab[3]-1>=0)&&(tab[2]+1<8)&&(tab[3]+1<8)){
+						//System.out.println("MOZNA SPRAWDZIC");
+					if(((BlackField)b.getField(tab[2]+1, tab[3]+1)).havePawn()){
+						if((((BlackField)b.getField(tab[2]+1, tab[3]+1)).getPawn().getSide()!=s)
+								&& ((!((BlackField)b.getField(tab[2]-1, tab[3]-1)).havePawn())||
+										((tab[0]==tab[2]-1)&&(tab[1]==tab[3]-1)))){
+							//normalMove.remove(index);
+							System.out.println("USUWAM");
+							normalMove.remove(tab);
+							//index++;
+							continue; //pomin ten ruch
+						}
+					}
+					}
+					
+					//normalMove.add(tab);//jak przejdzie przez wszystkie to dodaj ten ruch
+					
+					index++;
+				}
+				
+				zr = normalMove.iterator();
+				System.out.println("WYPIS Z LISTY ZWYKLYCH RUCHOW = "+normalMove.size());
+				while(zr.hasNext()){
+					int[] e = zr.next();
+					System.out.println("RUCH ZW "+e[0]+e[1]+"  "+e[2]+e[3]);
+				}
+				if(!normalMove.isEmpty())
+				return rm.getRandomMove(normalMove); else return rm.getRandomMove(moveL);
+			
+			}
+			//----------OPERACJE DLA BIC
 			int[] index = new int[moveL.size()]; //ilosc kolejnych bic, dla bicia o danym indexie zgodnym z indexem tabeli
 			int nrIndex = 0;
 			int kierunek;
@@ -131,10 +223,10 @@ public class KingAndBeatMove {
 				
 			}
 			
-			for(int h=0;h<index.length;h++){
+			/*for(int h=0;h<index.length;h++){
 				System.out.println("Ilosc ruchow "+index[h]+" index "+h +" z "+index.length);
 				if(index[h]>=1) return moveL.get(h); //zwroc ruch dla pierwszego wykrytego bicia > 1
-			}
+			}*/
 		}
 		return rm.getRandomMove(moveL); //jakby co zwroc calkiem losowy
 		

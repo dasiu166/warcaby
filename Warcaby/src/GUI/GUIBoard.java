@@ -434,6 +434,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				//gInf.setMoves(moveList);//wpisanie listy ruchow na zakladke
 				if(boardLog.checkGameStatus(moveList)){
 					JOptionPane.showMessageDialog(null, "Wygrales");
+					
+					return;
 				}
 				
 			} else {

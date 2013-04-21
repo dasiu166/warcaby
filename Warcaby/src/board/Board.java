@@ -537,8 +537,9 @@ public class Board {
 				// return true;
 				if (Math.abs(rVal) == Math.abs(cVal)) {
 					if (dF.havePawn()) {
-						if (dF.getPawn().getSide() == tF.getPawn().getSide())
-							return false;// jesli napotka pionka koloru damki to
+						return false;
+						//if (dF.getPawn().getSide() == tF.getPawn().getSide())
+							//return false;// jesli napotka pionka koloru damki to
 											// wyjdz
 					}
 					return true;
