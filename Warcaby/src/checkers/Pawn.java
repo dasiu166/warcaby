@@ -25,6 +25,9 @@ public class Pawn {
 	public void setKing(){
 		king=true;
 	}
+	public void removeKing(){
+		king=false;
+	}
 	public int getRow(){
 		return row;
 	}

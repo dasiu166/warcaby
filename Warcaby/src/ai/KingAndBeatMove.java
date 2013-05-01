@@ -17,6 +17,8 @@ public class KingAndBeatMove {
 	public int[] getMove(LinkedList<int[]> moveL, boolean s, Board b){
 		int[] t = {0};
 		kingMove.clear();
+		beatMove.clear();
+		normalMove.clear();
 		if((moveL.isEmpty())/*||((moveL.size()==1)&&(moveL.getFirst()[0]!=-1))*/) {
 			return null;
 			}
@@ -30,7 +32,7 @@ public class KingAndBeatMove {
 		while(i.hasNext()){
 			if(s){//dla czerwonych
 				int[] m = i.next();
-				if(m[0]==-1) continue;
+				if(m[0]==-1)// continue;
 			    if(((BlackField)b.getField(m[0], m[1])).getPawn().isKing()) continue;
 			    //System.out.println("M2 = "+m[2]+s);
 				if(m[2]==0) kingMove.add(m);
@@ -102,8 +104,9 @@ public class KingAndBeatMove {
 						if((((BlackField)b.getField(tab[2]-1, tab[3]-1)).getPawn().getSide()!=s)
 								&& ((!((BlackField)b.getField(tab[2]+1, tab[3]+1)).havePawn())||
 								((tab[0]==tab[2]+1)&&(tab[1]==tab[3]+1)))){
-							System.out.println("USUWAM");
+							//System.out.println("USUWAM");
 							normalMove.remove(tab);
+							//zr.remove();
 							//index++;
 							continue; //pomin ten ruch
 						}
@@ -116,7 +119,8 @@ public class KingAndBeatMove {
 						if((((BlackField)b.getField(tab[2]+1, tab[3]-1)).getPawn().getSide()!=s)
 								&& ((!((BlackField)b.getField(tab[2]-1, tab[3]+1)).havePawn())||
 								((tab[0]==tab[2]-1)&&(tab[1]==tab[3]+1)))){
-							System.out.println("USUWAM");
+							//System.out.println("USUWAM");
+							//zr.remove();
 							normalMove.remove(tab);
 							//index++;
 							continue; //pomin ten ruch
@@ -129,7 +133,8 @@ public class KingAndBeatMove {
 						if((((BlackField)b.getField(tab[2]-1, tab[3]+1)).getPawn().getSide()!=s)
 								&& ((!((BlackField)b.getField(tab[2]+1, tab[3]-1)).havePawn())||
 										((tab[0]==tab[2]+1)&&(tab[1]==tab[3]-1)))){
-							System.out.println("USUWAM");
+							//System.out.println("USUWAM");
+							//zr.remove();
 							normalMove.remove(tab);
 							//index++;
 							continue; //pomin ten ruch
@@ -144,7 +149,8 @@ public class KingAndBeatMove {
 								&& ((!((BlackField)b.getField(tab[2]-1, tab[3]-1)).havePawn())||
 										((tab[0]==tab[2]-1)&&(tab[1]==tab[3]-1)))){
 							//normalMove.remove(index);
-							System.out.println("USUWAM");
+							//System.out.println("USUWAM");
+							//zr.remove();
 							normalMove.remove(tab);
 							//index++;
 							continue; //pomin ten ruch
@@ -157,14 +163,132 @@ public class KingAndBeatMove {
 					index++;
 				}
 				
-				zr = normalMove.iterator();
+				/*zr = normalMove.iterator();
 				System.out.println("WYPIS Z LISTY ZWYKLYCH RUCHOW = "+normalMove.size());
 				while(zr.hasNext()){
 					int[] e = zr.next();
 					System.out.println("RUCH ZW "+e[0]+e[1]+"  "+e[2]+e[3]);
-				}
-				if(!normalMove.isEmpty())
-				return rm.getRandomMove(normalMove); else return rm.getRandomMove(moveL);
+				}*/
+				if(!normalMove.isEmpty()){ 
+					
+					
+					//BEZPIECZENSTWO RUCHU
+					//kopiowanie listy ruchow
+					LinkedList<int[]> backUp = new LinkedList<int[]>();
+					Iterator<int[]> zz = normalMove.iterator();
+					while(zz.hasNext()){
+						backUp.add(zz.next());
+					}
+					Iterator<int[]> zzz = backUp.iterator();
+					while(zzz.hasNext()){
+						int[] tar = zzz.next();
+						
+						if((tar[0]+2<8)&&(tar[1]+2<8)){
+						if (((BlackField)b.getField(tar[0]+1, tar[1]+1)).havePawn()){
+							if (((BlackField)b.getField(tar[0]+1, tar[1]+1)).getPawn().getSide()==s){
+								if (((BlackField)b.getField(tar[0]+2, tar[1]+2)).havePawn()){
+									if (((BlackField)b.getField(tar[0]+2, tar[1]+2)).getPawn().getSide()!=s){
+										
+										zzz.remove();
+										continue;
+									}
+								}
+							}
+						}
+						}
+						
+						if((tar[0]-2>=0)&&(tar[1]-2>=0)){
+						if (((BlackField)b.getField(tar[0]-1, tar[1]-1)).havePawn()){
+							if (((BlackField)b.getField(tar[0]-1, tar[1]-1)).getPawn().getSide()==s){
+								if (((BlackField)b.getField(tar[0]-2, tar[1]-2)).havePawn()){
+									if (((BlackField)b.getField(tar[0]-2, tar[1]-2)).getPawn().getSide()!=s){
+										zzz.remove();
+										continue;
+									}
+								}
+							}
+						}
+						}
+						
+						if((tar[0]-2>=0)&&(tar[1]+2<8)){
+						if (((BlackField)b.getField(tar[0]-1, tar[1]+1)).havePawn()){
+							if (((BlackField)b.getField(tar[0]-1, tar[1]+1)).getPawn().getSide()==s){
+								if (((BlackField)b.getField(tar[0]-2, tar[1]+2)).havePawn()){
+									if (((BlackField)b.getField(tar[0]-2, tar[1]+2)).getPawn().getSide()!=s){
+										zzz.remove();
+										continue;
+									}
+								}
+							}
+						}
+						}
+						
+						if((tar[0]+2<8)&&(tar[1]-2>=0)){
+						if (((BlackField)b.getField(tar[0]+1, tar[1]-1)).havePawn()){
+							if (((BlackField)b.getField(tar[0]+1, tar[1]-1)).getPawn().getSide()==s){
+								if (((BlackField)b.getField(tar[0]+2, tar[1]-2)).havePawn()){
+									if (((BlackField)b.getField(tar[0]+2, tar[1]-2)).getPawn().getSide()!=s){
+										zzz.remove();
+										continue;
+									}
+								}
+							}
+						}
+						}
+						
+						
+					}
+					
+					if(!backUp.isEmpty()){
+						System.out.println("BACKUP SIZE = "+backUp.size());
+						//rm.getRandomMove(backUp);
+					}
+					
+					//BLOKOWANIE
+					//sprawdzenie bic przeciwnika
+					LinkedList<int[]> block = new LinkedList<int[]>();
+					LinkedList<int[]> blockCombo = new LinkedList<int[]>();
+					LinkedList<int[]> oponent = b.PawnsToMoveList(!s); //sprawdz bicia czlowieka
+					if(oponent.getFirst()[0]!=-1){
+						Iterator<int[]> o = oponent.iterator();
+						while(o.hasNext()){
+							int[] odest = o.next();
+							
+							if(!backUp.isEmpty()){
+							
+								Iterator<int[]> nn = backUp.iterator();
+								while(nn.hasNext()){
+									int[] ndest = nn.next();
+									if((ndest[2]==odest[2])&&(ndest[3]==ndest[3])){
+										//jak sie da zablokowac bicie to blokuj
+										blockCombo.add(ndest);
+									}
+								}
+							}
+							Iterator<int[]> n = normalMove.iterator();
+							while(n.hasNext()){
+								int[] ndest = n.next();
+								if((ndest[2]==odest[2])&&(ndest[3]==ndest[3])){
+									//jak sie da zablokowac bicie to blokuj
+									block.add(ndest);
+								}
+							}
+							
+						}
+						
+						if(!blockCombo.isEmpty()){ //blok z bezpiecznym ruchem
+							return rm.getRandomMove(blockCombo);
+						}
+						
+						if(!block.isEmpty()){ //jak mozna cosik zablokowac to zwroc losowy z puli
+							return rm.getRandomMove(block);
+						}
+						
+					}
+				return rm.getRandomMove(normalMove);
+				
+				
+				} else return rm.getRandomMove(moveL);
 			
 			}
 			//----------OPERACJE DLA BIC
@@ -223,10 +347,11 @@ public class KingAndBeatMove {
 				
 			}
 			
-			/*for(int h=0;h<index.length;h++){
+			
+			for(int h=0;h<index.length;h++){
 				System.out.println("Ilosc ruchow "+index[h]+" index "+h +" z "+index.length);
 				if(index[h]>=1) return moveL.get(h); //zwroc ruch dla pierwszego wykrytego bicia > 1
-			}*/
+			}
 		}
 		return rm.getRandomMove(moveL); //jakby co zwroc calkiem losowy
 		

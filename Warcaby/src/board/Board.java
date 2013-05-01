@@ -21,14 +21,31 @@ public class Board {
 	private LinkedList<int[]> pawnsAiToRemove = new LinkedList<int[]>();//pionki oznaczone jako do usuniecia po bicu komputera
 	private int[] possStart = {-1,-1}; //pozycja pionka przed biciem
 	private int[] possAiStart = {-1,-1};
+	private boolean wasKing = false;
+	private boolean wasAiKing = false;
+	public boolean wasKing(){
+		return wasKing;
+	}
+	public boolean wasAiKing(){
+		return wasAiKing;
+	}
+	public void resetWasKing(){
+		wasKing=false;
+	}
 	
 	public void setPossStart(int[] t){
+		if(t!=null){
+		if (((BlackField)board[t[0]][t[1]]).getPawn().isKing()) wasKing=true; else wasKing=false;
+		}
 		possStart=t;
 	}
 	public int[] getPossStart(){
 		return possStart;
 	}
 	public void setAiPossStart(int[] t){
+		if(t!=null){
+		if (((BlackField)board[t[0]][t[1]]).getPawn().isKing()) wasAiKing=true; else wasAiKing=false;
+		}
 		possAiStart=t;
 	}
 	public int[] getAiPossStart(){
@@ -377,7 +394,7 @@ public class Board {
 								v[1] = target[1];
 								// przod prawo
 								while (1 == 1) {
-									System.out.println("przod prawo");
+									//System.out.println("przod prawo");
 									v[0]--;
 									v[1]++;
 									if (v[1] > 7)
@@ -579,7 +596,7 @@ public class Board {
 
 				// return true;
 				if (Math.abs(rVal) == Math.abs(cVal)) {
-					System.out.println(rVal + " --- " + cVal);
+					//System.out.println(rVal + " --- " + cVal);
 					return true;
 				} else
 					return false;
@@ -629,7 +646,7 @@ public class Board {
 				}
 				
 				if (tmpP.getSide() == s) {
-					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					//System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
 					}
 				
@@ -659,7 +676,7 @@ public class Board {
 					continue;
 				if (tmpP.getSide() == s)
 				{
-					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					//System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
 					}
 				if (tmpP.getSide() != s) {
@@ -690,7 +707,7 @@ public class Board {
 					continue;
 				if (tmpP.getSide() == s)
 				{
-					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					//System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
 					}
 				if (tmpP.getSide() != s) {
@@ -727,7 +744,7 @@ public class Board {
 				
 				if (tmpP.getSide() == s)
 				{
-					System.out.println("DAMKA - WYKRYTO SWOJEGO");
+					//System.out.println("DAMKA - WYKRYTO SWOJEGO");
 					break;
 					}
 				

@@ -253,8 +253,14 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			System.out.println("\n CofamAI z  ----- "+aiDest[0]+aiDest[1]+" na "+boardLog.getAiPossStart()[0]+boardLog.getAiPossStart()[1]);
 
 			boardLog.doMove(aiDest, boardLog.getAiPossStart());
+			if(!boardLog.wasAiKing()){
+				((BlackField)boardLog.getField(boardLog.getAiPossStart()[0],boardLog.getAiPossStart()[1])).getPawn().removeKing();
+			}
 			}
 		boardLog.doMove(dest, boardLog.getPossStart());
+		if(!boardLog.wasKing()){
+			((BlackField)boardLog.getField(boardLog.getPossStart()[0],boardLog.getPossStart()[1])).getPawn().removeKing();
+		}
 		System.out.println("\n Cofam z  ----- "+dest[0]+dest[1]+" na "+boardLog.getPossStart()[0]+boardLog.getPossStart()[1]);
 		
 		site=!site; //cofniecie zmiany stron
