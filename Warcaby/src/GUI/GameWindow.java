@@ -153,6 +153,7 @@ public class GameWindow extends JFrame implements ActionListener{
 		Gboard.setVisible(true);
 		Gboard.resetGUIBoard(strona);
 		Gboard.setAi(ai);
+		Gboard.nopaint=false;
 		ResetStrona=strona;
 		ResetAi=ai;
 	}

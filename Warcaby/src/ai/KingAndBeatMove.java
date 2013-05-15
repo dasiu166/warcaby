@@ -177,7 +177,9 @@ public class KingAndBeatMove {
 					LinkedList<int[]> backUp = new LinkedList<int[]>();
 					Iterator<int[]> zz = normalMove.iterator();
 					while(zz.hasNext()){
-						backUp.add(zz.next());
+						int[] tt = zz.next();
+						if(tt[0]==-1) continue;
+						backUp.add(tt);
 					}
 					Iterator<int[]> zzz = backUp.iterator();
 					while(zzz.hasNext()){
@@ -285,6 +287,7 @@ public class KingAndBeatMove {
 						}
 						
 					}
+					//if(!backUp.isEmpty()) rm.getRandomMove(backUp); else 
 				return rm.getRandomMove(normalMove);
 				
 				

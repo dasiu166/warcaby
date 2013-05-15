@@ -14,11 +14,25 @@ public class AiEngine {
 	boolean perToClick=true;
 	LinkedList<int[]> movesToDo = new LinkedList<int[]>(); //lista ruchow do wykonania
 	LinkedList<int[]> tmpL = new LinkedList<int[]>(); //lista tymczasowa
+	LinkedList<int[]> tmpL2 = new LinkedList<int[]>(); //lista tymczasowa
 	
 	RandomMove rm = new RandomMove(); //ruchy losowe
 	KingAndBeatMove km = new KingAndBeatMove();
 	int[] destC;
+	private boolean won;
 	
+	public boolean isWon() {
+		return won;
+	}
+
+
+
+	public void setWon(boolean won) {
+		this.won = won;
+	}
+
+
+
 	public AiEngine(Board b, boolean s){
 		board=b;
 		site=s;
@@ -76,14 +90,17 @@ public class AiEngine {
 		if((wasBeat)&&(tmpL.getFirst()[0]==-1)){
 			perToClick=true;//pozwol na klikniecia
 			run=false;
-			
+			((BlackField)board.getField(destC[0], destC[1])).getPawn().checkAndSetKing(destC[0]);
+
 			return;
 		}
 		
 		if (wasBeat){
 			if(!board.isTargetOnList(tmpL, tar)){//koniec wielobicia
+				destC=dest;
 				perToClick=true;//pozwol na klikniecia
 				run=false;
+				((BlackField)board.getField(destC[0], destC[1])).getPawn().checkAndSetKing(destC[0]);
 				return;
 			}
 		}
@@ -96,7 +113,7 @@ public class AiEngine {
 			destC=dest;
 			perToClick=true;
 			run=false;
-			((BlackField)board.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+			((BlackField)board.getField(destC[0], destC[1])).getPawn().checkAndSetKing(destC[0]);
 			
 			return;
 		} else {
@@ -105,13 +122,16 @@ public class AiEngine {
 			wasBeat=true;
 			tar=dest;
 			destC=dest;
-			((BlackField)board.getField(dest[0], dest[1])).getPawn().checkAndSetKing(dest[0]);
+			//((BlackField)board.getField(destC[0], destC[1])).getPawn().checkAndSetKing(destC[0]);
 
 		}
 		
-		if(board.checkGameStatus(tmpL)){
+		tmpL2=board.PawnsToMoveList(!site);
+		if(board.checkGameStatus(tmpL2)){
 			JOptionPane.showMessageDialog(null, "Wygral komputer");
+			won = true;
 		}
+		
 			
 		}
 

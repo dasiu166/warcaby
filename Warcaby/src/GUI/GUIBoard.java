@@ -80,11 +80,13 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 	
 	private PlayersPanel plP; //panel wyswietlajacy liczbe pionkow
 	private GameInfo gInf;
+	boolean nopaint=false;
 	//END###---INNE
 	
 	@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if(nopaint) return;
         g2d = (Graphics2D) g;
         
         /*g2d.setColor(Color.DARK_GRAY);
@@ -290,10 +292,6 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {	
-		
-		
-		
-		
 		if (numbClick==0){
 			
 			if((ai)){
@@ -391,7 +389,8 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 			if(is){ //jezeli przeznaczenie jest na liscie
 		
 				boardLog.doMove(target, dest,true); //!!!TU uruchamaia sie caly mechaniz warcab
-				
+				boardLog.setRowChkF(-1);
+				boardLog.setColChkF(-1);
 				
 				plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
 				plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2
@@ -446,6 +445,9 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 				
 			} else {
 				JOptionPane.showMessageDialog(null, "Na to pole nie ma ruchu");
+				boardLog.setRowChkF(-1);
+				boardLog.setColChkF(-1);
+				repaint();
 				numbClick=0;
 				aiPermision=false;//ruch komputra
 				}
@@ -455,6 +457,11 @@ public class GUIBoard extends JPanel implements ActionListener, MouseListener {
 					engine.computate();
 					aiDest=engine.getComputateDest();
 					aiPermision=false;
+					if(engine.isWon()){
+						nopaint=true;
+						engine.setWon(false);
+						
+					}
 					plP.setSite(engine.getSite());//wskazanie na panelu czyja kolej
 					plP.setp1PG(boardLog.getLostPawnsNumb(false));//licznik zbic dla gracza 1
 					plP.setp2PG(boardLog.getLostPawnsNumb(true));//licznik zbic dla gracza 2

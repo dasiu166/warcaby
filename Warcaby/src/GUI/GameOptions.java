@@ -174,7 +174,7 @@ public class GameOptions extends JFrame implements ActionListener {
 		        panel.add(Box.createRigidArea(new Dimension(0, 15)));
 				
 		        //this.pack();
-		        this.setTitle("Narazie brzydkie ale bedzie ladne;)");
+		        this.setTitle("");
 				this.setSize(400, 200);
 				this.setResizable(false);
 		        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
